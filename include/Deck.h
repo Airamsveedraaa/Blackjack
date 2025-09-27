@@ -4,11 +4,8 @@
 
 #ifndef BLACKJACK_DECK_H
 #define BLACKJACK_DECK_H
-#include <vector>
-#include <algorithm> //shuffle
-#include <random> //srand
-#include <stdexcept> //throwexcept...
 #include "Card.h"
+#include "Comun.h"
 
 using namespace std;
 

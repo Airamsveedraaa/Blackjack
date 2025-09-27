@@ -4,7 +4,7 @@
 
 #ifndef BLACKJACK_DEALER_H
 #define BLACKJACK_DEALER_H
-
+#include "Comun.h"
 
 class Dealer {
 };

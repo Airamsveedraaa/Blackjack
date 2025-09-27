@@ -4,8 +4,7 @@
 
 #ifndef BLACKJACK_CARD_H
 #define BLACKJACK_CARD_H
-
-using namespace std;
+#include "Comun.h"
 
 enum class Suit{Hearts,Spades,Clubs,Diamonds};
 enum class Rank{TWO=2,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,TEN,JACK=10,QUEEN=10,KING=10,ACE=11};
