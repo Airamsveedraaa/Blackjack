@@ -1,8 +1,11 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.23)
 project(Blackjack)
 
-set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_STANDARD 20)
+
+include_directories(include)
 
 add_executable(Blackjack main.cpp
         src/Card.cpp
-        include/Card.h)
+        src/Deck.cpp
+        include/Deck.h)
