@@ -8,4 +8,9 @@ include_directories(include)
 add_executable(Blackjack main.cpp
         src/Card.cpp
         src/Deck.cpp
-        include/Deck.h)
+        include/Deck.h
+        src/Player.cpp
+        include/Player.h
+        src/Dealer.cpp
+        include/Dealer.h
+        include/Comun.h)
