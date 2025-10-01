@@ -11,6 +11,7 @@
 #include <iostream> //cout cin
 #include <random> //srand and more
 #include <cstring> //stdcopy,stdcmp...
+#include <string>
 
 using namespace std;
 #endif //BLACKJACK_COMUN_H

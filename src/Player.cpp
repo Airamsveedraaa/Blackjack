@@ -30,12 +30,11 @@ int Player::getHandValue() const {
 }
 
 
-void Player::showHand(bool showAll) const {
-    showAll=true;
+void Player::showHand(bool showAll=true) const {
 
     cout << Name << "'s hand: " << endl;
     for (size_t i = 0; i < hand.size(); i++) {
-        if (!showAll & i==0) {
+        if (!showAll && i==0) {
             cout << "[?]" << endl;
         }
         else {
