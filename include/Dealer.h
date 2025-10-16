@@ -5,8 +5,13 @@
 #ifndef BLACKJACK_DEALER_H
 #define BLACKJACK_DEALER_H
 #include "Comun.h"
+#include "Player.h"
 
-class Dealer {
+class Dealer :public Player{
+public:
+    Dealer();
+    bool shouldHit()const;
+    void showHand(bool hideFirstCard=true)const;
 };
 
 

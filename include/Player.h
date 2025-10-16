@@ -9,16 +9,19 @@
 
 class Player {
 
-private:
-    char Name[20];
+protected:
+    char* name;
     vector<Card> hand;
     int bet;
 public:
 
-    Player(char n[20]);
+    Player(const char* Name);
+    ~Player();
     int getHandValue() const;
     void hit();
-    void showHand(bool showAll) const;
+    void showHand(bool showAll=true) const;
+    void clearHand();
+    void addCard(Card card);
 };
 
 

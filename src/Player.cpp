@@ -4,9 +4,22 @@
 
 #include "../include/Player.h"
 
-Player::Player(char n[20]) {
-    strcpy(Name,n);
+Player::Player(const char* name) {
+    name=new char[strlen(name)+1];
+    strcpy(this->name,name);
     bet=0;
+}
+
+Player::~Player() {
+    delete[] name;
+}
+
+void Player::addCard(Card card) {
+    hand.push_back(card);
+}
+
+void Player::clearHand() {
+    hand.clear();
 }
 
 int Player::getHandValue() const {
@@ -15,9 +28,16 @@ int Player::getHandValue() const {
     int value=0;
 
     for (auto &card  : hand) {
-        value+=card.value;
-        if (card.rank=='A') {
+        Rank cardRank=card.getrank();
+        if (cardRank==Rank::ACE) {
+            value+=11;
             aces++;
+        }
+        else if (cardRank>= Rank::JACK && cardRank<= Rank::KING) {
+            value+=10;
+        }
+        else {
+            value+= static_cast<int>(cardRank);
         }
     }
 
@@ -30,12 +50,12 @@ int Player::getHandValue() const {
 }
 
 
-void Player::showHand(bool showAll=true) const {
+void Player::showHand(bool showAll) const {
 
-    cout << Name << "'s hand: " << endl;
+    cout << name << "'s hand: " << endl;
     for (size_t i = 0; i < hand.size(); i++) {
         if (!showAll && i==0) {
-            cout << "[?]" << endl;
+            cout << "[HIDDEN]" << endl;
         }
         else {
             cout << hand[i].toString() << " " <<  endl;

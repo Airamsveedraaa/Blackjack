@@ -10,11 +10,11 @@ Card::Card(Suit s, Rank r) {
 }
 
 Suit Card::getsuit() const {
-    return s;
+    return this->s;
 }
 
 Rank Card::getrank() const {
-    return r;
+    return this->r;
 }
 
 int Card::getcard() const {
