@@ -10,7 +10,7 @@
 #include <stdexcept> //exceptions
 #include <iostream> //cout cin
 #include <random> //srand and more
-#include <cstring> //stdcopy,stdcmp...
+#include <cstring> //strcpy,strcmp...
 #include <string>
 
 using namespace std;
