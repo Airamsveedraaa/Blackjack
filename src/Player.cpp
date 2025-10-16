@@ -4,9 +4,9 @@
 
 #include "../include/Player.h"
 
-Player::Player(const char* name) {
-    name=new char[strlen(name)+1];
-    strcpy(this->name,name);
+Player::Player(const char* Name) {
+    Name=new char[strlen(Name)+1];
+    strcpy(this->name,Name);
     bet=0;
 }
 
