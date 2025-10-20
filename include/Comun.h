@@ -12,6 +12,7 @@
 #include <random> //srand and more
 #include <cstring> //strcpy,strcmp...
 #include <string>
+#include <windows.h>
 
 using namespace std;
 #endif //BLACKJACK_COMUN_H

@@ -2,9 +2,12 @@
 #include "include/Player.h"
 #include "include/Dealer.h"
 
+
 using namespace std;
 
 int main() {
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
     cout << "=== TEST BLACKJACK CLASSES ===" << endl << endl;
 
     // Test 1: Crear y barajar baraja

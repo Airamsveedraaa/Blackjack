@@ -13,4 +13,6 @@ add_executable(Blackjack main.cpp
         include/Player.h
         src/Dealer.cpp
         include/Dealer.h
-        include/Comun.h)
+        include/Comun.h
+        src/Game.cpp
+        include/Game.h)

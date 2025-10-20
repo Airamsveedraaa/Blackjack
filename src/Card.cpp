@@ -42,16 +42,16 @@ string Card::toString() const {
     string suitStr;
     switch (s) {
         case Suit::Hearts:
-            suitStr = "♥";
+            suitStr = "\u2665";
             break;
         case Suit::Spades:
-            suitStr = "♠";
+            suitStr = "\u2660";
             break;
         case Suit::Clubs:
-            suitStr = "♣";
+            suitStr = "\u2663";
             break;
         case Suit::Diamonds:
-            suitStr = "♦";
+            suitStr = "\u2666";
             break;
     }
 
