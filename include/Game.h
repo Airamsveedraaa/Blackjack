@@ -23,6 +23,7 @@ private:
     Player player;
     Dealer dealer;
     int playerMoney;
+    int currentBet;
     GameState state;
 
 public:
@@ -36,7 +37,7 @@ public:
     void resetRound();          // Limpia manos y prepara nueva ronda
 
     bool canContinue() const;   // ¿Tiene dinero el jugador?
-    int getPlayerMoney() const; // Getter del dinero
+    int getPlayerMoney() const{return this->playerMoney;}; // Getter del dinero
 };
 
 #endif //BLACKJACK_GAME_H
