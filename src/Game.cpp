@@ -80,17 +80,23 @@ void Game::dealInitialCards() {
     void Game::playerTurn() {
         state = GameState::PLAYER_TURN;
         char resp;
+    bool firstTurn=true;
 
     if (hasBlackjack(player.getHandValue(),player.getHandSize())) {
         return;
     }
 
         while (player.getHandValue() < 21) {
-            cout << "¿Quieres pedir carta? (S/N): ";
+            if (firstTurn && playerMoney >=currentBet) {
+                cout << "Opciones: [H]it  |  [S]tand  |  [D]ouble Down ";
+            }
+            else {
+                cout << "¿Quieres pedir una carta? (H/S): "; //si no tiene suficiente o no es el primer turno solo podra hitear o stand
+            }
             cin >> resp;
             cin.ignore();  // ← IMPORTANTE: Limpiar buffer
 
-            if (toupper(resp) == 'S') {
+            if (toupper(resp)== 'H') {
                 player.addCard(deck.dealCard());
                 cout << "\n--- Nueva carta ---" << endl;
                 player.showHand();
@@ -99,13 +105,30 @@ void Game::dealInitialCards() {
                     cout << "¡TE PASASTE! Pierdes esta ronda." << endl;
                     return;
                 }
+                firstTurn=false; //ya no es el primer turno, no puede doblar
             }
-            else if (toupper(resp) == 'N') {
+            else if (toupper(resp) == 'D' && firstTurn && playerMoney >= currentBet) {
+                cout << "\n--- DOUBLE DOWN ---" << endl;
+                cout << "Doblas tu apuesta a $" << (currentBet*2) << endl;
+                currentBet*=2;
+                player.addCard(deck.dealCard());
+                cout << "Recibes una carta final." << endl;
+                player.showHand();
+
+                if (player.getHandValue() > 21) {
+                    cout << "¡TE PASASTE!" << endl;
+                }
+                else{
+                    cout << "Te plantas con " << player.getHandValue() << endl;
+                }
+                return; //termina automaticamente si entra aqui
+            }
+            else if (toupper(resp) == 'S') {
                 cout << "Te plantas con " << player.getHandValue() << endl;
                 return;  // ← Sale del método
             }
             else {
-                cout << "Opción no válida. Usa S o N." << endl;
+                cout << "Opción no válida. Usa [S|H|D]." << endl;
             }
         }
 
@@ -197,14 +220,14 @@ void Game::determineWinner() {
         // No se gana ni se pierde
     }
     // CASO ESPECIAL: Solo jugador tiene Blackjack
-    else if (playerBJ) {
+    else if (playerBJ && !dealerBJ) {
         cout << "¡¡¡BLACKJACK NATURAL!!! Ganas 1.5x tu apuesta 🎰💰" << endl;
         int winnings = currentBet + (currentBet * 3 / 2); // Apuesta + 1.5x
-        playerMoney += winnings;
-        cout << "Ganaste $" << winnings << endl;
+        playerMoney =currentBet + winnings;
+        cout << "Ganaste $" << (currentBet + winnings) << endl;
     }
     // CASO ESPECIAL: Solo dealer tiene Blackjack
-    else if (dealerBJ) {
+    else if (dealerBJ && !playerBJ) {
         cout << "El dealer tiene Blackjack. Pierdes." << endl;
         playerMoney -= currentBet;
     }
