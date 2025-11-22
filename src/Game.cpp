@@ -13,6 +13,14 @@ deck()
     playerMoney = initialMoney;
     currentBet = 0;
     state=GameState::BETTING;
+    wins = 0;
+    losses = 0;
+    ties = 0;
+    currentStreak = 0;
+    bestStreak = 0;
+    blackjacksHit = 0;
+    maxMoney = initialMoney;
+    totalBet = 0;
     deck.shuffle();
 
     cout << "¡Bienvenido a la mesa de Blackjack, " << PlayerName << "!" << endl;
@@ -182,6 +190,7 @@ void Game::playRound()
     }
 
     cout << "Apostaste $" << currentBet << endl << endl;
+    totalBet+=currentBet;
 
     //Repartir cartas iniciales
     dealInitialCards();
@@ -218,6 +227,8 @@ void Game::determineWinner() {
     if (playerBJ && dealerBJ) {
         cout << "¡EMPATE! Ambos tienen Blackjack. Recuperas tu apuesta." << endl;
         // No se gana ni se pierde
+        ties++;
+        currentStreak=0;
     }
     // CASO ESPECIAL: Solo jugador tiene Blackjack
     else if (playerBJ && !dealerBJ) {
@@ -225,33 +236,54 @@ void Game::determineWinner() {
         int winnings = currentBet + (currentBet * 3 / 2); // Apuesta + 1.5x
         playerMoney =currentBet + winnings;
         cout << "Ganaste $" << (currentBet + winnings) << endl;
+        wins++;
+        blackjacksHit++;
+        currentStreak= (currentStreak >= 0) ? currentStreak +1 : 1;
+        if (currentStreak > bestStreak ) bestStreak=currentStreak;
     }
     // CASO ESPECIAL: Solo dealer tiene Blackjack
     else if (dealerBJ && !playerBJ) {
         cout << "El dealer tiene Blackjack. Pierdes." << endl;
         playerMoney -= currentBet;
+        losses++;
+        currentStreak = (currentStreak <= 0) ? currentStreak - 1 : -1;
     }
     // Casos normales (sin Blackjack natural)
     else if (playerValue > 21) {
         cout << "¡Perdiste! Te pasaste de 21." << endl;
         playerMoney -= currentBet;
+        losses++;
+        currentStreak = (currentStreak <= 0) ? currentStreak - 1 : -1;
     }
     else if (dealerValue > 21) {
         cout << "¡GANASTE! El dealer se pasó." << endl;
         playerMoney += currentBet;
+        wins++;
+        currentStreak = (currentStreak >= 0) ? currentStreak + 1 : 1;
+        if (currentStreak > bestStreak) bestStreak = currentStreak;
     }
     else if (playerValue > dealerValue) {
         cout << "¡GANASTE! Tu mano es mejor." << endl;
         playerMoney += currentBet;
+        wins++;
+        currentStreak = (currentStreak >= 0) ? currentStreak + 1 : 1;
+        if (currentStreak > bestStreak) bestStreak = currentStreak;
     }
     else if (dealerValue > playerValue) {
         cout << "Perdiste. La mano del dealer es mejor." << endl;
         playerMoney -= currentBet;
+        losses++;
+        currentStreak = (currentStreak <= 0) ? currentStreak - 1 : -1;
     }
     else {
         cout << "¡EMPATE! Recuperas tu apuesta." << endl;
+        ties++;
+        currentStreak=0;
     }
 
+    if (playerMoney > maxMoney) {
+        maxMoney=playerMoney;
+    }
     cout << "Dinero actual: $" << playerMoney << endl << endl;
 }
 
@@ -260,6 +292,31 @@ bool Game::hasBlackjack(int handValue, size_t numCards) const {
     return handValue==21 && numCards==2;
 }
 
+
+void Game::showStatistics() const {
+    cout << "\n╔════════════════════════════════════╗" << endl;
+    cout << "║        ESTADÍSTICAS                ║" << endl;
+    cout << "╠════════════════════════════════════╣" << endl;
+    cout << "║ Victorias:           " << setw(12) << wins << " ║" << endl;
+    cout << "║ Derrotas:            " << setw(12) << losses << " ║" << endl;
+    cout << "║ Empates:             " << setw(12) << ties << " ║" << endl;
+
+    int totalRounds = wins + losses + ties;
+    if (totalRounds > 0) {
+        double winRate = (double)wins / totalRounds * 100;
+        cout << "║ Win Rate:            " << setw(9) << fixed << setprecision(1) << winRate << "% ║" << endl;
+    }
+
+    cout << "║ Racha actual:        " << setw(12) << currentStreak << " ║" << endl;
+    cout << "║ Mejor racha:         " << setw(12) << bestStreak << " ║" << endl;
+    cout << "║ Blackjacks:          " << setw(12) << blackjacksHit << " ║" << endl;
+    cout << "║ Dinero máximo:      $" << setw(11) << maxMoney << " ║" << endl;
+    cout << "║ Total apostado:     $" << setw(11) << totalBet << " ║" << endl;
+
+    int netProfit = playerMoney - initialMoney;
+    cout << "║ Beneficio neto:     $" << setw(11) << netProfit << " ║" << endl;
+    cout << "╚════════════════════════════════════╝" << endl << endl;
+}
 
 
 

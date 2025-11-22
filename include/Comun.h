@@ -13,6 +13,7 @@
 #include <cstring> //strcpy,strcmp...
 #include <string>
 #include <windows.h>
+#include <iomanip> //setw, setprecision...
 
 using namespace std;
 #endif //BLACKJACK_COMUN_H

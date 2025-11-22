@@ -27,6 +27,17 @@ private:
     GameState state;
     bool hasBlackjack(int handValue, size_t numCards)const;
 
+    //ESTADISTICAS
+    int initialMoney;        // Dinero inicial para calcular beneficio
+    int wins;                // Victorias
+    int losses;              // Derrotas
+    int ties;                // Empates
+    int currentStreak;       // Racha actual (positivo = victorias, negativo = derrotas)
+    int bestStreak;          // Mejor racha de victorias
+    int blackjacksHit;       // Blackjacks naturales conseguidos
+    int maxMoney;            // Dinero máximo alcanzado
+    int totalBet;            // Total apostado
+
 public:
     Game(const char* playerName, int initialMoney = 1000);
 
@@ -36,6 +47,9 @@ public:
     void dealerTurn();          // Turno del dealer (automático)
     void determineWinner();     // Calcula y muestra ganador
     void resetRound();          // Limpia manos y prepara nueva ronda
+
+    void showStatistics() const;
+    void updateStats(bool won);
 
     bool canContinue() const;   // ¿Tiene dinero el jugador?
     int getPlayerMoney() const{return this->playerMoney;}; // Getter del dinero
