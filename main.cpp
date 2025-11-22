@@ -4,25 +4,33 @@
 using namespace std;
 
 int main() {
-    SetConsoleOutputCP(CP_UTF8);  // Para Windows
+    SetConsoleOutputCP(CP_UTF8);
 
     Game game("Jugador", 1000);
 
     while (game.canContinue()) {
         game.playRound();
 
-        cout << "¿Quieres jugar otra ronda? (S/N): ";
-        char continuar;
-        cin >> continuar;
+        cout << "Opciones: [J]ugar otra ronda | [E]stadísticas | [S]alir: ";
+        char opcion;
+        cin >> opcion;
         cin.ignore();
+        opcion = toupper(opcion);
 
-        if (toupper(continuar) != 'S') {
+        if (opcion == 'E') {
+            game.showStatistics();
+            cout << "Presiona Enter para continuar...";
+            cin.get();
+        }
+        else if (opcion == 'S') {
             break;
         }
+        // Si es 'J' o cualquier otra cosa, continúa el bucle
     }
 
-    cout << "\n¡Gracias por jugar!" << endl;
-    cout << "Dinero final: $" << game.getPlayerMoney() << endl;
+    cout << "\n=== PARTIDA FINALIZADA ===" << endl;
+    game.showStatistics();
+    cout << "¡Gracias por jugar!" << endl;
 
     return 0;
 }
