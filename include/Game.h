@@ -25,6 +25,7 @@ private:
     int playerMoney;
     int currentBet;
     GameState state;
+    bool hasBlackjack(int handValue, size_t numCards)const;
 
 public:
     Game(const char* playerName, int initialMoney = 1000);

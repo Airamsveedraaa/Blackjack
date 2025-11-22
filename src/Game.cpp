@@ -51,11 +51,39 @@ void Game::dealInitialCards() {
     player.showHand();
     dealer.showHand(true);
     // 2 cartas para cada uno inicialmente y se enseñan
+
+    //Comprobar blackjack natural para ambos
+    if (hasBlackjack(player.getHandValue(),player.getHandSize())) {
+        cout << "¡¡¡BLACKJACK!!! " << endl;
+    }
+    if (hasBlackjack(dealer.getHandValue(),dealer.getHandSize())) {
+        cout << "El dealer tiene BLACKJACK..."<<endl;
+        dealer.showHand(false);
+    }
+
+    // Verificar Blackjack natural
+    bool playerBJ = hasBlackjack(player.getHandValue(), player.getHandSize());
+    bool dealerBJ = hasBlackjack(dealer.getHandValue(), dealer.getHandSize());
+
+    if (playerBJ) {
+        cout << "¡¡¡BLACKJACK NATURAL!!! 🎰" << endl;
+    }
+
+    // Solo revelar dealer si tiene Blackjack (para terminar ronda inmediatamente)
+    if (dealerBJ) {
+        cout << "\n--- El dealer revela sus cartas ---" << endl;
+        dealer.showHand(false);
+        cout << "El dealer tiene BLACKJACK..." << endl;
+    }
 }
 
     void Game::playerTurn() {
         state = GameState::PLAYER_TURN;
         char resp;
+
+    if (hasBlackjack(player.getHandValue(),player.getHandSize())) {
+        return;
+    }
 
         while (player.getHandValue() < 21) {
             cout << "¿Quieres pedir carta? (S/N): ";
@@ -90,6 +118,11 @@ void Game::dealInitialCards() {
 void Game::dealerTurn() {
     if (player.getHandValue() > 21) {
         return; //plater gana
+    }
+
+    if (hasBlackjack(player.getHandValue(),player.getHandSize()) ||
+        hasBlackjack(dealer.getHandValue(),dealer.getHandSize())) {
+        return;
     }
 
     state=GameState::DEALER_TURN;
@@ -143,25 +176,46 @@ void Game::playRound()
     resetRound();
 }
 
-void Game::determineWinner()
-{
-    state=GameState::ROUND_END;
+void Game::determineWinner() {
+    state = GameState::ROUND_END;
 
-    int playerValue=player.getHandValue();
-    int dealerValue=dealer.getHandValue();
+    int playerValue = player.getHandValue();
+    int dealerValue = dealer.getHandValue();
+    size_t playerCards = player.getHandSize();
+    size_t dealerCards = dealer.getHandSize();
+
+    bool playerBJ = hasBlackjack(playerValue, playerCards);
+    bool dealerBJ = hasBlackjack(dealerValue, dealerCards);
 
     cout << "\n=== RESULTADO ===" << endl;
     cout << "Jugador: " << playerValue << endl;
     cout << "Dealer: " << dealerValue << endl;
 
-    //determinar ganador
-    if (playerValue > 21) {
+    // CASO ESPECIAL: Ambos tienen Blackjack
+    if (playerBJ && dealerBJ) {
+        cout << "¡EMPATE! Ambos tienen Blackjack. Recuperas tu apuesta." << endl;
+        // No se gana ni se pierde
+    }
+    // CASO ESPECIAL: Solo jugador tiene Blackjack
+    else if (playerBJ) {
+        cout << "¡¡¡BLACKJACK NATURAL!!! Ganas 1.5x tu apuesta 🎰💰" << endl;
+        int winnings = currentBet + (currentBet * 3 / 2); // Apuesta + 1.5x
+        playerMoney += winnings;
+        cout << "Ganaste $" << winnings << endl;
+    }
+    // CASO ESPECIAL: Solo dealer tiene Blackjack
+    else if (dealerBJ) {
+        cout << "El dealer tiene Blackjack. Pierdes." << endl;
+        playerMoney -= currentBet;
+    }
+    // Casos normales (sin Blackjack natural)
+    else if (playerValue > 21) {
         cout << "¡Perdiste! Te pasaste de 21." << endl;
-        playerMoney-=currentBet;
+        playerMoney -= currentBet;
     }
     else if (dealerValue > 21) {
         cout << "¡GANASTE! El dealer se pasó." << endl;
-        playerMoney+=currentBet;
+        playerMoney += currentBet;
     }
     else if (playerValue > dealerValue) {
         cout << "¡GANASTE! Tu mano es mejor." << endl;
@@ -176,6 +230,11 @@ void Game::determineWinner()
     }
 
     cout << "Dinero actual: $" << playerMoney << endl << endl;
+}
+
+
+bool Game::hasBlackjack(int handValue, size_t numCards) const {
+    return handValue==21 && numCards==2;
 }
 
 
