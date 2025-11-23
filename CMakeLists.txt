@@ -3,8 +3,8 @@ project(Blackjack)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Buscar SFML
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+# Buscar SFML 3.0
+find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
 
 include_directories(include)
 
@@ -22,12 +22,16 @@ add_executable(Blackjack_Console
         include/Game.h
         include/Comun.h
         include/Card.h
+        src/BlackjackGUI.cpp
+        include/BlackjackGUI.h
 )
 
 # Ejecutable GUI (nuevo - para probar SFML)
 add_executable(Blackjack_GUI
         main_gui.cpp
+        src/BlackjackGUI.cpp
+        include/BlackjackGUI.h
 )
 
-# Linkear SFML solo al ejecutable GUI
-target_link_libraries(Blackjack_GUI sfml-graphics sfml-window sfml-system)
+# Linkear SFML 3 al ejecutable GUI
+target_link_libraries(Blackjack_GUI SFML::Graphics SFML::Window SFML::System)
