@@ -9,6 +9,36 @@
 #include "Dealer.h"
 #include "Comun.h"
 
+//Estructura para devolver resultado de ronda
+struct RoundResult {
+    enum class Outcome {
+        PLAYER_WIN,
+        DEALER_WIN,
+        TIE,
+        PLAYER_BLACKJACK,
+        DEALER_BLACKJACK,
+        BOTH_BLACKJACK,
+        PLAYER_BUST,
+        DEALER_BUST
+    };
+
+    Outcome outcome;
+    int moneyChange; //Dinero ganado/perdido
+    int playerValue;
+    int dealerValue;
+    bool wasBlackjack;
+};
+
+
+//Resultado de acción del jugador
+enum class PlayerActionResult {
+    CONTINUE, //Puede seguir jugando
+    BUST, //Se pasó de 21
+    STAND, //Se plantó
+    BLACKJACK //Tiene 21
+};
+
+
 enum class GameState {
     BETTING,
     DEALING,
@@ -25,34 +55,69 @@ private:
     int playerMoney;
     int currentBet;
     GameState state;
-    bool hasBlackjack(int handValue, size_t numCards)const;
 
-    //ESTADISTICAS
-    int initialMoney;        // Dinero inicial para calcular beneficio
-    int wins;                // Victorias
-    int losses;              // Derrotas
-    int ties;                // Empates
-    int currentStreak;       // Racha actual (positivo = victorias, negativo = derrotas)
-    int bestStreak;          // Mejor racha de victorias
-    int blackjacksHit;       // Blackjacks naturales conseguidos
-    int maxMoney;            // Dinero máximo alcanzado
-    int totalBet;            // Total apostado
+    // Estadísticas
+    int initialMoney;
+    int wins;
+    int losses;
+    int ties;
+    int currentStreak;
+    int bestStreak;
+    int blackjacksHit;
+    int maxMoney;
+    int totalBet;
+
+    // Métodos privados de lógica pura
+    bool hasBlackjack(int handValue, size_t numCards) const;
+    void updateStatistics(RoundResult::Outcome outcome);
 
 public:
     Game(const char* playerName, int initialMoney = 1000);
 
-    void playRound();           // Ejecuta una ronda completa
-    void dealInitialCards();    // Reparte 2 cartas a cada uno
-    void playerTurn();          // Turno del jugador (Hit/Stand)
-    void dealerTurn();          // Turno del dealer (automático)
-    void determineWinner();     // Calcula y muestra ganador
-    void resetRound();          // Limpia manos y prepara nueva ronda
+    // === MÉTODOS PARA GUI ===
 
-    void showStatistics() const;
-    void updateStats(bool won);
+    // Estado del juego
+    GameState getState() const { return state; }
+    int getPlayerMoney() const { return playerMoney; }
+    int getCurrentBet() const { return currentBet; }
+    bool canContinue() const { return playerMoney > 0; }
 
-    bool canContinue() const;   // ¿Tiene dinero el jugador?
-    int getPlayerMoney() const{return this->playerMoney;}; // Getter del dinero
+    // Acceso a jugadores
+    const Player& getPlayer() const { return player; }
+    const Dealer& getDealer() const { return dealer; }
+
+    // Estadísticas
+    int getWins() const { return wins; }
+    int getLosses() const { return losses; }
+    int getTies() const { return ties; }
+    int getCurrentStreak() const { return currentStreak; }
+    int getBestStreak() const { return bestStreak; }
+    int getBlackjacksHit() const { return blackjacksHit; }
+    int getMaxMoney() const { return maxMoney; }
+    int getTotalBet() const { return totalBet; }
+    double getWinRate() const;
+
+    // === MÉTODOS DE JUEGO (sin cout/cin) ===
+
+    // Iniciar ronda
+    bool placeBet(int amount);           // Devuelve true si apuesta válida
+    void startRound();                   // Reparte cartas iniciales
+
+    // Acciones del jugador
+    PlayerActionResult playerHit();      // Jugador pide carta
+    PlayerActionResult playerStand();    // Jugador se planta
+    PlayerActionResult playerDoubleDown();  // Jugador dobla
+
+    // Turno del dealer (automático)
+    void playDealerTurn();               // Dealer juega automáticamente
+
+    // Determinar ganador y resetear
+    RoundResult finishRound();           // Calcula ganador, devuelve resultado
+    void resetForNewRound();             // Limpia para nueva ronda
+
+    // === MÉTODOS PARA CONSOLA (temporal) ===
+    void showStatistics() const;         // Mantener por ahora
+    void playRound();                    // Mantener para consola
 };
 
 #endif //BLACKJACK_GAME_H

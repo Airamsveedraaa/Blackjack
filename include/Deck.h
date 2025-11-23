@@ -15,6 +15,7 @@ class Deck {
     vector<Card> cards; //vector of cards type object
 
 public:
+    int getReaminingCards() const {return cards.size() - curr_indx;};
     Deck(); //constructor
     void shuffle(); //shuffles the deck
     Card dealCard(); //gives card

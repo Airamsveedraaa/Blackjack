@@ -14,7 +14,11 @@ protected:
     vector<Card> hand;
     int bet;
 public:
+    const vector<Card>& getHand() const {return hand;};
     size_t getHandSize() {return hand.size();};
+    const char* getName() {return name;};
+    int getBet () const {return bet;};
+    void setBet (int _bet) {this->bet = _bet;};
     Player(const char* Name);
     ~Player();
     int getHandValue() const;
