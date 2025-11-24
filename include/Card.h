@@ -15,6 +15,8 @@ private:
     Rank r;
 
 public:
+    string getCardString() const;
+    string getSuitString() const;
     Card(Suit s, Rank r); //constructor
     Suit getsuit() const; //returns suit of the card
     Rank getrank() const; //returns rank of the card

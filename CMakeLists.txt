@@ -26,10 +26,15 @@ add_executable(Blackjack_Console
         include/BlackjackGUI.h
 )
 
-# Ejecutable GUI (nuevo - para probar SFML)
+# Ejecutable GUI
 add_executable(Blackjack_GUI
         main_gui.cpp
         src/BlackjackGUI.cpp
+        src/Card.cpp
+        src/Deck.cpp
+        src/Player.cpp
+        src/Dealer.cpp
+        src/Game.cpp
         include/BlackjackGUI.h
 )
 

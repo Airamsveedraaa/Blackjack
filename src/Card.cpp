@@ -57,3 +57,38 @@ string Card::toString() const {
 
     return rankStr + suitStr;
 }
+
+
+string Card::getCardString() const {
+
+    switch (r) {
+        case Rank::TWO:   return "2";
+        case Rank::THREE: return "3";
+        case Rank::FOUR:  return "4";
+        case Rank::FIVE:  return "5";
+        case Rank::SIX:   return "6";
+        case Rank::SEVEN: return "7";
+        case Rank::EIGHT: return "8";
+        case Rank::NINE:  return "9";
+        case Rank::TEN:   return "10";
+        case Rank::JACK:  return "J";
+        case Rank::QUEEN: return "Q";
+        case Rank::KING:  return "K";
+        case Rank::ACE:   return "A";
+        default: return "?";
+    }
+
+}
+
+
+string Card::getSuitString() const {
+
+    switch (s) {
+        case Suit::Hearts:   return "\u2665";  // ♥
+        case Suit::Spades:   return "\u2660";  // ♠
+        case Suit::Clubs:    return "\u2663";  // ♣
+        case Suit::Diamonds: return "\u2666";  // ♦
+        default: return "?";
+    }
+
+}
