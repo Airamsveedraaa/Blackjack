@@ -26,10 +26,17 @@ private:
     sf::RectangleShape doubleButton;
     sf::RectangleShape playButton;
     sf::RectangleShape nextRoundButton;
+    // Botones de apuesta
+    sf::RectangleShape bet10Button;
+    sf::RectangleShape bet50Button;
+    sf::RectangleShape bet100Button;
+    sf::RectangleShape clearBetButton;
+    sf::RectangleShape dealButton;
     
     int currentBet;
     std::string resultMessage;
-    
+    void handleClick();
+
 public:
     BlackjackGUI();
     ~BlackjackGUI();
