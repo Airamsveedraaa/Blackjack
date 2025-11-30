@@ -13,7 +13,7 @@ currentBet(0),
 resultMessage("")
 {
     window.setFramerateLimit(60);
-    if (!font.openFromFile("C:/Windows/Fonts/arial.ttf")) {
+    if (!font.openFromFile("C:/Windows/Fonts/seguisym.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente" << std::endl;
         throw std::runtime_error("No se pudo cargar la fuente");
     }
@@ -261,45 +261,217 @@ void BlackjackGUI::drawBettingScreen() {
 }
 
 void BlackjackGUI::drawGameScreen() {
-    //TO DO ---> Dibujar cartas y botones
-    sf::Text placeholder(font);
-    placeholder.setString("(Game screen - TODO)");
-    placeholder.setCharacterSize(20);
-    placeholder.setFillColor(sf::Color::White);
-    placeholder.setPosition(sf::Vector2f(500, 300));
-    window.draw(placeholder);
+    // Título
+    sf::Text title(font);
+    title.setString("BLACKJACK");
+    title.setCharacterSize(40);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(520, 20));
+    window.draw(title);
+
+    // Etiqueta Dealer
+    sf::Text dealerLabel(font);
+    dealerLabel.setString("DEALER");
+    dealerLabel.setCharacterSize(25);
+    dealerLabel.setFillColor(sf::Color::Yellow);
+    dealerLabel.setPosition(sf::Vector2f(580, 70));
+    window.draw(dealerLabel);
+
+    // Dibujar mano del dealer (primera carta oculta)
+    drawDealerHand(true);
+
+    // Etiqueta Player
+    sf::Text playerLabel(font);
+    playerLabel.setString("PLAYER");
+    playerLabel.setCharacterSize(25);
+    playerLabel.setFillColor(sf::Color::Yellow);
+    playerLabel.setPosition(sf::Vector2f(575, 420));
+    window.draw(playerLabel);
+
+    // Dibujar mano del jugador
+    drawPlayerHand();
+
+    // Mostrar dinero y apuesta
+    sf::Text moneyText(font);
+    moneyText.setString("Money: $" + std::to_string(game->getPlayerMoney()));
+    moneyText.setCharacterSize(25);
+    moneyText.setFillColor(sf::Color::Yellow);
+    moneyText.setPosition(sf::Vector2f(50, 50));
+    window.draw(moneyText);
+
+    sf::Text betText(font);
+    betText.setString("Bet: $" + std::to_string(game->getCurrentBet()));
+    betText.setCharacterSize(25);
+    betText.setFillColor(sf::Color::White);
+    betText.setPosition(sf::Vector2f(50, 90));
+    window.draw(betText);
+
+    // Dibujar botones
+    drawButton(hitButton, "HIT");
+    drawButton(standButton, "STAND");
+
+    // Double solo si tiene 2 cartas y suficiente dinero
+    if (game->getPlayer().getHandSize() == 2 && game->getPlayerMoney() >= game->getCurrentBet()) {
+        drawButton(doubleButton, "DOUBLE");
+    }
 }
 
 void BlackjackGUI::drawResultScreen() {
+    // Título
+    sf::Text title(font);
+    title.setString("ROUND OVER");
+    title.setCharacterSize(50);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(450, 50));
+    window.draw(title);
+
+    // Etiqueta Dealer
+    sf::Text dealerLabel(font);
+    dealerLabel.setString("DEALER");
+    dealerLabel.setCharacterSize(25);
+    dealerLabel.setFillColor(sf::Color::Yellow);
+    dealerLabel.setPosition(sf::Vector2f(580, 120));
+    window.draw(dealerLabel);
+
+    // Mostrar todas las cartas del dealer (reveladas)
+    drawDealerHand(false);
+
+    // Etiqueta Player
+    sf::Text playerLabel(font);
+    playerLabel.setString("PLAYER");
+    playerLabel.setCharacterSize(25);
+    playerLabel.setFillColor(sf::Color::Yellow);
+    playerLabel.setPosition(sf::Vector2f(575, 350));
+    window.draw(playerLabel);
+
+    // Mostrar cartas del jugador
+    drawPlayerHand();
+
     // Mostrar resultado
     sf::Text resultText(font);
     resultText.setString(resultMessage);
-    resultText.setCharacterSize(50);
-    resultText.setFillColor(sf::Color::Yellow);
-    resultText.setPosition(sf::Vector2f(400, 250));
+    resultText.setCharacterSize(40);
+
+    // Color según resultado
+    if (resultMessage.find("WIN") != std::string::npos ||
+        resultMessage.find("BLACKJACK") != std::string::npos) {
+        resultText.setFillColor(sf::Color::Green);
+    }
+    else if (resultMessage.find("BUST") != std::string::npos ||
+             resultMessage.find("LOSS") != std::string::npos ||
+             resultMessage.find("DEALER WINS") != std::string::npos) {
+        resultText.setFillColor(sf::Color::Red);
+    }
+    else {
+        resultText.setFillColor(sf::Color::Yellow);
+    }
+
+    // Centrar texto del resultado
+    sf::FloatRect textBounds = resultText.getLocalBounds();
+    resultText.setPosition(sf::Vector2f(
+        640 - textBounds.size.x / 2.0f,
+        520
+    ));
     window.draw(resultText);
+
+    // Dinero actual
+    sf::Text moneyText(font);
+    moneyText.setString("Money: $" + std::to_string(game->getPlayerMoney()));
+    moneyText.setCharacterSize(30);
+    moneyText.setFillColor(sf::Color::Yellow);
+    moneyText.setPosition(sf::Vector2f(520, 580));
+    window.draw(moneyText);
 
     // Botón siguiente ronda
     drawButton(nextRoundButton, "NEXT ROUND");
-
-    sf::Text placeholder(font);
-    placeholder.setString("(Result screen - TODO)");
-    placeholder.setCharacterSize(20);
-    placeholder.setFillColor(sf::Color(200, 200, 200));
-    placeholder.setPosition(sf::Vector2f(500, 400));
-    window.draw(placeholder);
 }
 
 void BlackjackGUI::drawPlayerHand() {
-    //TO DO ---> Implementar
+    const Player& player = game->getPlayer();
+    const auto& hand = player.getHand();
+
+    float startX = 400.0f;
+    float y = 450.0f;
+    float spacing = 90.0f;
+
+    for (size_t i = 0; i < hand.size(); i++) {
+        drawCard(sf::Vector2f(startX + i * spacing, y), hand[i], false);
+    }
+
+    // Mostrar valor de la mano
+    sf::Text valueText(font);
+    valueText.setString("Value: " + std::to_string(player.getHandValue()));
+    valueText.setCharacterSize(25);
+    valueText.setFillColor(sf::Color::White);
+    valueText.setPosition(sf::Vector2f(startX, y + 130));
+    window.draw(valueText);
 }
 
 void BlackjackGUI::drawDealerHand(bool hideFirst) {
-    //TO DO ---> Implementar
+    const Dealer& dealer = game->getDealer();
+    const auto& hand = dealer.getHand();
+
+    float startX = 400.0f;
+    float y = 100.0f;
+    float spacing = 90.0f;
+
+    for (size_t i = 0; i < hand.size(); i++) {
+        bool shouldHide = (hideFirst && i == 0);
+        drawCard(sf::Vector2f(startX + i * spacing, y), hand[i], shouldHide);
+    }
+
+    // Mostrar valor solo si no hay cartas ocultas
+    if (!hideFirst) {
+        sf::Text valueText(font);
+        valueText.setString("Value: " + std::to_string(dealer.getHandValue()));
+        valueText.setCharacterSize(25);
+        valueText.setFillColor(sf::Color::White);
+        valueText.setPosition(sf::Vector2f(startX, y - 40));
+        window.draw(valueText);
+    }
 }
 
 void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden) {
-    //TO DO ---> Implementar
+    // Rectángulo de la carta
+    sf::RectangleShape cartaRect(sf::Vector2f(80, 110));
+    cartaRect.setPosition(position);
+    cartaRect.setFillColor(sf::Color::White);
+    cartaRect.setOutlineColor(sf::Color::Black);
+    cartaRect.setOutlineThickness(2);
+    window.draw(cartaRect);
+
+    if (hidden) {
+        // Carta oculta - mostrar patrón
+        sf::Text oculto(font);
+        oculto.setString("?");
+        oculto.setCharacterSize(50);
+        oculto.setFillColor(sf::Color::Blue);
+        oculto.setPosition(sf::Vector2f(position.x + 25, position.y + 25));
+        window.draw(oculto);
+    } else {
+        // Mostrar rango (arriba izquierda)
+        sf::Text rango(font);
+        rango.setString(card.getCardString());
+        rango.setCharacterSize(30);
+        rango.setFillColor(sf::Color::Black);
+        rango.setPosition(sf::Vector2f(position.x + 10, position.y + 10));
+        window.draw(rango);
+
+        // Mostrar palo (centro)
+        sf::Text palo(font);
+        palo.setString(card.getSuitString());
+        palo.setCharacterSize(40);
+
+        // Color rojo para corazones y diamantes
+        if (card.getsuit() == Suit::Hearts || card.getsuit() == Suit::Diamonds) {
+            palo.setFillColor(sf::Color::Red);
+        } else {
+            palo.setFillColor(sf::Color::Black);
+        }
+
+        palo.setPosition(sf::Vector2f(position.x + 25, position.y + 50));
+        window.draw(palo);
+    }
 }
 
 
@@ -357,33 +529,92 @@ switch (currentState) {
         // Botón HIT
         if (mouseOver(hitButton)) {
             std::cout << "HIT clicked" << std::endl;
-            game->playerHit();
-            // TO DO Llamar a game->playerHit()
+            PlayerActionResult result = game->playerHit();
+
+            if (result == PlayerActionResult::BUST) {
+                std::cout << "¡TE PASASTE!" << std::endl;
+                // Terminar ronda inmediatamente
+                game->playDealerTurn();
+                RoundResult roundResult = game->finishRound();
+                resultMessage = "YOU BUSTED! DEALER WINS";
+                currentState = GUIState::RESULT;
+            }
+            else if (result == PlayerActionResult::BLACKJACK) {
+                std::cout << "¡BLACKJACK! (21)" << std::endl;
+            }
         }
 
         // Botón STAND
-        if (mouseOver(standButton)) {
+        else if (mouseOver(standButton)) {
             std::cout << "STAND clicked" << std::endl;
             game->playerStand();
-            // TO DO Llamar a game->playerStand()
+
+            // Dealer juega
+            game->playDealerTurn();
+
+            // Determinar ganador
+            RoundResult roundResult = game->finishRound();
+
+            // Mensaje según resultado
+            switch (roundResult.outcome) {
+                case RoundResult::Outcome::PLAYER_WIN:
+                    resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
+                    break;
+                case RoundResult::Outcome::DEALER_WIN:
+                    resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
+                    break;
+                case RoundResult::Outcome::TIE:
+                    resultMessage = "TIE! Push";
+                    break;
+                case RoundResult::Outcome::PLAYER_BLACKJACK:
+                    resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
+                    break;
+                case RoundResult::Outcome::DEALER_BLACKJACK:
+                    resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
+                    break;
+                case RoundResult::Outcome::PLAYER_BUST:
+                    resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
+                    break;
+                case RoundResult::Outcome::DEALER_BUST:
+                    resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
+                    break;
+                case RoundResult::Outcome::BOTH_BLACKJACK:
+                    resultMessage = "BOTH BLACKJACK! Push";
+                    break;
+            }
+
+            currentState = GUIState::RESULT;
         }
 
         // Botón DOUBLE
-        if (mouseOver(doubleButton)) {
-            std::cout << "DOUBLE clicked" << std::endl;
-            game->playerDoubleDown();
-            // TO DO Llamar a game->playerDoubleDown()
+        else if (mouseOver(doubleButton)) {
+            if (game->getPlayer().getHandSize() == 2 && game->getPlayerMoney() >= game->getCurrentBet()) {
+                std::cout << "DOUBLE clicked" << std::endl;
+                PlayerActionResult result = game->playerDoubleDown();
+
+                // Después de double, siempre pasa al dealer
+                game->playDealerTurn();
+                RoundResult roundResult = game->finishRound();
+
+                if (result == PlayerActionResult::BUST) {
+                    resultMessage = "BUSTED AFTER DOUBLE! -$" + std::to_string(-roundResult.moneyChange);
+                } else {
+                    switch (roundResult.outcome) {
+                        case RoundResult::Outcome::PLAYER_WIN:
+                            resultMessage = "DOUBLE WIN! +$" + std::to_string(roundResult.moneyChange);
+                            break;
+                        case RoundResult::Outcome::DEALER_WIN:
+                            resultMessage = "DOUBLE LOSS! -$" + std::to_string(-roundResult.moneyChange);
+                            break;
+                        default:
+                            resultMessage = "DOUBLE TIE! Push";
+                            break;
+                    }
+                }
+
+                currentState = GUIState::RESULT;
+            }
         }
         break;
-
-    case GUIState::RESULT:
-        if (mouseOver(nextRoundButton)) {
-            std::cout << "NEXT ROUND clicked" << std::endl;
-            game->resetForNewRound();
-            currentState = GUIState::BETTING;
-        }
-        break;
+    }
 }
-
-}
-
