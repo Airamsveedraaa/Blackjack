@@ -84,10 +84,10 @@ string Card::getCardString() const {
 string Card::getSuitString() const {
 
     switch (s) {
-        case Suit::Hearts:   return "\u2665";  // ♥
-        case Suit::Spades:   return "\u2660";  // ♠
-        case Suit::Clubs:    return "\u2663";  // ♣
-        case Suit::Diamonds: return "\u2666";  // ♦
+        case Suit::Hearts:   return "♥";  // ♥
+        case Suit::Spades:   return "♠";  // ♠
+        case Suit::Clubs:    return "♣";  // ♣
+        case Suit::Diamonds: return  "♦";  // ♦
         default: return "?";
     }
 

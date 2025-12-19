@@ -266,26 +266,29 @@ void BlackjackGUI::drawGameScreen() {
     title.setString("BLACKJACK");
     title.setCharacterSize(40);
     title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(520, 20));
+    title.setPosition(sf::Vector2f(520, 15));
     window.draw(title);
 
     // Etiqueta Dealer
     sf::Text dealerLabel(font);
     dealerLabel.setString("DEALER");
-    dealerLabel.setCharacterSize(25);
+    dealerLabel.setCharacterSize(22);
     dealerLabel.setFillColor(sf::Color::Yellow);
-    dealerLabel.setPosition(sf::Vector2f(580, 70));
+    dealerLabel.setPosition(sf::Vector2f(50, 110));
     window.draw(dealerLabel);
 
     // Dibujar mano del dealer (primera carta oculta)
     drawDealerHand(true);
 
+    //Maybe añadir linea separatoria ¿?
+    //probare como queda para ver si se añade o no se añade
+
     // Etiqueta Player
     sf::Text playerLabel(font);
     playerLabel.setString("PLAYER");
-    playerLabel.setCharacterSize(25);
+    playerLabel.setCharacterSize(22);
     playerLabel.setFillColor(sf::Color::Yellow);
-    playerLabel.setPosition(sf::Vector2f(575, 420));
+    playerLabel.setPosition(sf::Vector2f(50, 380));
     window.draw(playerLabel);
 
     // Dibujar mano del jugador
@@ -294,16 +297,16 @@ void BlackjackGUI::drawGameScreen() {
     // Mostrar dinero y apuesta
     sf::Text moneyText(font);
     moneyText.setString("Money: $" + std::to_string(game->getPlayerMoney()));
-    moneyText.setCharacterSize(25);
+    moneyText.setCharacterSize(24);
     moneyText.setFillColor(sf::Color::Yellow);
-    moneyText.setPosition(sf::Vector2f(50, 50));
+    moneyText.setPosition(sf::Vector2f(50, 30));
     window.draw(moneyText);
 
     sf::Text betText(font);
     betText.setString("Bet: $" + std::to_string(game->getCurrentBet()));
-    betText.setCharacterSize(25);
+    betText.setCharacterSize(24);
     betText.setFillColor(sf::Color::White);
-    betText.setPosition(sf::Vector2f(50, 90));
+    betText.setPosition(sf::Vector2f(50, 60));
     window.draw(betText);
 
     // Dibujar botones
@@ -320,28 +323,31 @@ void BlackjackGUI::drawResultScreen() {
     // Título
     sf::Text title(font);
     title.setString("ROUND OVER");
-    title.setCharacterSize(50);
+    title.setCharacterSize(45);
     title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(450, 50));
+    title.setPosition(sf::Vector2f(480, 20));
     window.draw(title);
 
     // Etiqueta Dealer
     sf::Text dealerLabel(font);
     dealerLabel.setString("DEALER");
-    dealerLabel.setCharacterSize(25);
+    dealerLabel.setCharacterSize(22);
     dealerLabel.setFillColor(sf::Color::Yellow);
-    dealerLabel.setPosition(sf::Vector2f(580, 120));
+    dealerLabel.setPosition(sf::Vector2f(50, 80));
     window.draw(dealerLabel);
 
     // Mostrar todas las cartas del dealer (reveladas)
     drawDealerHand(false);
 
+    //Linea separatoria ¿?
+    // ya la probare aqui tambien
+
     // Etiqueta Player
     sf::Text playerLabel(font);
     playerLabel.setString("PLAYER");
-    playerLabel.setCharacterSize(25);
+    playerLabel.setCharacterSize(22);
     playerLabel.setFillColor(sf::Color::Yellow);
-    playerLabel.setPosition(sf::Vector2f(575, 350));
+    playerLabel.setPosition(sf::Vector2f(50, 310));
     window.draw(playerLabel);
 
     // Mostrar cartas del jugador
@@ -350,7 +356,7 @@ void BlackjackGUI::drawResultScreen() {
     // Mostrar resultado
     sf::Text resultText(font);
     resultText.setString(resultMessage);
-    resultText.setCharacterSize(40);
+    resultText.setCharacterSize(38);
 
     // Color según resultado
     if (resultMessage.find("WIN") != std::string::npos ||
@@ -377,9 +383,9 @@ void BlackjackGUI::drawResultScreen() {
     // Dinero actual
     sf::Text moneyText(font);
     moneyText.setString("Money: $" + std::to_string(game->getPlayerMoney()));
-    moneyText.setCharacterSize(30);
+    moneyText.setCharacterSize(28);
     moneyText.setFillColor(sf::Color::Yellow);
-    moneyText.setPosition(sf::Vector2f(520, 580));
+    moneyText.setPosition(sf::Vector2f(540, 630));
     window.draw(moneyText);
 
     // Botón siguiente ronda
@@ -390,8 +396,8 @@ void BlackjackGUI::drawPlayerHand() {
     const Player& player = game->getPlayer();
     const auto& hand = player.getHand();
 
-    float startX = 400.0f;
-    float y = 450.0f;
+    float startX = 200.0f;
+    float y = 420.0f;
     float spacing = 90.0f;
 
     for (size_t i = 0; i < hand.size(); i++) {
@@ -401,9 +407,9 @@ void BlackjackGUI::drawPlayerHand() {
     // Mostrar valor de la mano
     sf::Text valueText(font);
     valueText.setString("Value: " + std::to_string(player.getHandValue()));
-    valueText.setCharacterSize(25);
+    valueText.setCharacterSize(22);
     valueText.setFillColor(sf::Color::White);
-    valueText.setPosition(sf::Vector2f(startX, y + 130));
+    valueText.setPosition(sf::Vector2f(200, y + 120));
     window.draw(valueText);
 }
 
@@ -411,8 +417,8 @@ void BlackjackGUI::drawDealerHand(bool hideFirst) {
     const Dealer& dealer = game->getDealer();
     const auto& hand = dealer.getHand();
 
-    float startX = 400.0f;
-    float y = 100.0f;
+    float startX = 200.0f;
+    float y = 140.0f;
     float spacing = 90.0f;
 
     for (size_t i = 0; i < hand.size(); i++) {
@@ -424,9 +430,9 @@ void BlackjackGUI::drawDealerHand(bool hideFirst) {
     if (!hideFirst) {
         sf::Text valueText(font);
         valueText.setString("Value: " + std::to_string(dealer.getHandValue()));
-        valueText.setCharacterSize(25);
+        valueText.setCharacterSize(22);
         valueText.setFillColor(sf::Color::White);
-        valueText.setPosition(sf::Vector2f(startX, y - 40));
+        valueText.setPosition(sf::Vector2f(200, y + 120));
         window.draw(valueText);
     }
 }
@@ -442,25 +448,37 @@ void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden
 
     if (hidden) {
         // Carta oculta - mostrar patrón
-        sf::Text oculto(font);
-        oculto.setString("?");
-        oculto.setCharacterSize(50);
-        oculto.setFillColor(sf::Color::Blue);
-        oculto.setPosition(sf::Vector2f(position.x + 25, position.y + 25));
-        window.draw(oculto);
+        sf::RectangleShape backPattern(sf::Vector2f(80,110));
+        backPattern.setPosition((position));
+        backPattern.setFillColor((sf::Color(50,50,150)));
+        window.draw(backPattern);
+
+        sf::Text pattern(font);
+        pattern.setString(("?"));
+        pattern.setCharacterSize(50);
+        pattern.setFillColor(sf::Color::White);
+        pattern.setPosition(sf::Vector2f(position.x+25,position.y+25));
+        window.draw(pattern);
     } else {
         // Mostrar rango (arriba izquierda)
         sf::Text rango(font);
         rango.setString(card.getCardString());
-        rango.setCharacterSize(30);
-        rango.setFillColor(sf::Color::Black);
-        rango.setPosition(sf::Vector2f(position.x + 10, position.y + 10));
+        rango.setCharacterSize(28);
+        if (card.getsuit()== Suit::Hearts || card.getsuit()==Suit::Diamonds) {
+            //si es corazones o espadas -> color rojo
+            rango.setFillColor(sf::Color::Red);
+        }
+        else {
+            //para trebol y picas -> color negro
+            rango.setFillColor(sf::Color::Black);
+        }
+        rango.setPosition(sf::Vector2f(position.x + 8, position.y + 5));
         window.draw(rango);
 
         // Mostrar palo (centro)
         sf::Text palo(font);
         palo.setString(card.getSuitString());
-        palo.setCharacterSize(40);
+        palo.setCharacterSize(35);
 
         // Color rojo para corazones y diamantes
         if (card.getsuit() == Suit::Hearts || card.getsuit() == Suit::Diamonds) {
@@ -469,8 +487,22 @@ void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden
             palo.setFillColor(sf::Color::Black);
         }
 
-        palo.setPosition(sf::Vector2f(position.x + 25, position.y + 50));
+        palo.setPosition(sf::Vector2f(position.x + 22, position.y + 45));
         window.draw(palo);
+
+        //texto esquina inferior derecha (invertido)
+        sf::Text rangoBottom(font);
+        rangoBottom.setString((card.getCardString()));
+        rangoBottom.setCharacterSize(28);
+
+        if (card.getsuit() == Suit::Hearts || card.getsuit() == Suit::Diamonds) {
+            rangoBottom.setFillColor(sf::Color::Red);
+        } else {
+            rangoBottom.setFillColor(sf::Color::Black);
+        }
+
+        rangoBottom.setPosition(sf::Vector2f(position.x + 45, position.y + 75));
+        window.draw(rangoBottom);
     }
 }
 
