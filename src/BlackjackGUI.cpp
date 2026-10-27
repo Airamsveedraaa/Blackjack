@@ -3,7 +3,6 @@
 //
 
 #include "BlackjackGUI.h"
-#include "BlackjackGUI.h"
 
 
 BlackjackGUI::BlackjackGUI()
@@ -57,7 +56,7 @@ void BlackjackGUI::initializeButtons() {
 
     // Botón NEXT ROUND
     nextRoundButton.setSize(sf::Vector2f(200, 60));
-    nextRoundButton.setPosition({540, 500});
+    nextRoundButton.setPosition({540, 600});
     nextRoundButton.setFillColor(sf::Color(100, 200, 100));
 
     // Botones de apuesta
@@ -299,7 +298,7 @@ void BlackjackGUI::drawGameScreen() {
     moneyText.setString("Money: $" + std::to_string(game->getPlayerMoney()));
     moneyText.setCharacterSize(24);
     moneyText.setFillColor(sf::Color::Yellow);
-    moneyText.setPosition(sf::Vector2f(50, 30));
+    moneyText.setPosition(sf::Vector2f(50, 20));
     window.draw(moneyText);
 
     sf::Text betText(font);
@@ -463,7 +462,7 @@ void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden
         // Mostrar rango (arriba izquierda)
         sf::Text rango(font);
         rango.setString(card.getCardString());
-        rango.setCharacterSize(28);
+        rango.setCharacterSize(24);
         if (card.getsuit()== Suit::Hearts || card.getsuit()==Suit::Diamonds) {
             //si es corazones o espadas -> color rojo
             rango.setFillColor(sf::Color::Red);
@@ -493,7 +492,7 @@ void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden
         //texto esquina inferior derecha (invertido)
         sf::Text rangoBottom(font);
         rangoBottom.setString((card.getCardString()));
-        rangoBottom.setCharacterSize(28);
+        rangoBottom.setCharacterSize(24);
 
         if (card.getsuit() == Suit::Hearts || card.getsuit() == Suit::Diamonds) {
             rangoBottom.setFillColor(sf::Color::Red);
@@ -646,6 +645,16 @@ switch (currentState) {
 
                 currentState = GUIState::RESULT;
             }
+        }
+        break;
+
+    case GUIState::RESULT:
+        if (mouseOver(nextRoundButton)) {
+            game->resetForNewRound();
+            resultMessage.clear();
+            std::cout << "NEXT ROUND clicked - Cambiando a BETTING" << std::endl;
+            currentBet=0;
+            currentState=GUIState::BETTING;
         }
         break;
     }
