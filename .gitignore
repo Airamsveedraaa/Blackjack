@@ -1,0 +1,6 @@
+# Configuración del IDE (CLion)
+.idea/
+
+# Carpetas de compilación
+cmake-build-*/
+build/
