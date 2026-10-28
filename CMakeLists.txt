@@ -22,8 +22,6 @@ add_executable(Blackjack_Console
         include/Game.h
         include/Comun.h
         include/Card.h
-        src/BlackjackGUI.cpp
-        include/BlackjackGUI.h
 )
 
 # Ejecutable GUI
