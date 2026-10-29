@@ -20,6 +20,10 @@ bool Game::placeBet(int amount) {
 
 void Game::startRound() {
 
+    if (deck.getRemainingCards() <= 10) {
+        deck.shuffle(); //if we have 10 or less cards reshuffle so the deck is full again
+    }
+
     state=GameState::DEALING;
     player.clearHand();
     dealer.clearHand();
@@ -33,6 +37,8 @@ void Game::startRound() {
     if (hasBlackjack(player.getHandValue(),player.getHandSize())) {
         state=GameState::ROUND_END;
     }
+
+
 }
 
 

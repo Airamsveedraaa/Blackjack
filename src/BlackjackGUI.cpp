@@ -476,7 +476,8 @@ void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden
 
         // Mostrar palo (centro)
         sf::Text palo(font);
-        palo.setString(card.getSuitString());
+        std::string paloStr = card.getSuitString();
+        palo.setString(sf::String::fromUtf8(paloStr.begin(), paloStr.end()));
         palo.setCharacterSize(35);
 
         // Color rojo para corazones y diamantes
