@@ -552,7 +552,40 @@ switch (currentState) {
             if (game->placeBet(currentBet)) {
                 std::cout << "Iniciando ronda con apuesta: $" << currentBet << std::endl;
                 game->startRound();
-                currentState = GUIState::PLAYING;
+                if (game->getState()==GameState::ROUND_END) {
+                    RoundResult roundResult = game->finishRound();
+                    // Mensaje según resultado
+                    switch (roundResult.outcome) {
+                        case RoundResult::Outcome::PLAYER_WIN:
+                            resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
+                            break;
+                        case RoundResult::Outcome::DEALER_WIN:
+                            resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
+                            break;
+                        case RoundResult::Outcome::TIE:
+                            resultMessage = "TIE! Push";
+                            break;
+                        case RoundResult::Outcome::PLAYER_BLACKJACK:
+                            resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
+                            break;
+                        case RoundResult::Outcome::DEALER_BLACKJACK:
+                            resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
+                            break;
+                        case RoundResult::Outcome::PLAYER_BUST:
+                            resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
+                            break;
+                        case RoundResult::Outcome::DEALER_BUST:
+                            resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
+                            break;
+                        case RoundResult::Outcome::BOTH_BLACKJACK:
+                            resultMessage = "BOTH BLACKJACK! Push";
+                            break;
+                    }
+                    currentState = GUIState::RESULT;
+                }
+                else{
+                    currentState = GUIState::PLAYING;
+                }
             }
         }
         break;

@@ -62,6 +62,9 @@ PlayerActionResult Game::playerHit() {
 
 
 PlayerActionResult Game::playerStand() {
+    if (state != GameState::PLAYER_TURN) {
+        return PlayerActionResult::CONTINUE; //si no es su turno, continúa el game
+    }
     state = GameState::DEALER_TURN;
     return PlayerActionResult::STAND;
     //Cambiamos a turno de dealer porque el player se mantiene
@@ -69,6 +72,9 @@ PlayerActionResult Game::playerStand() {
 
 
 PlayerActionResult Game::playerDoubleDown () {
+    if (state != GameState::PLAYER_TURN) {
+        return PlayerActionResult::CONTINUE; //si no es su turno, continúa el game
+    }
     if (player.getHandSize() !=2 || playerMoney < currentBet) {
         return PlayerActionResult::CONTINUE; //si no tiene para apostar, continua el juego
     }
@@ -325,7 +331,7 @@ RoundResult Game::finishRound() {
     else if (playerBJ && !dealerBJ) {
         result.outcome = RoundResult::Outcome::PLAYER_BLACKJACK;
         int winnings = (currentBet * 3) / 2;
-        result.moneyChange = currentBet + winnings;
+        result.moneyChange = winnings;
         playerMoney += result.moneyChange;
         wins++;
         blackjacksHit++;
