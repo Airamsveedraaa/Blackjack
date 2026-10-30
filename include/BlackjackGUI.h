@@ -16,7 +16,8 @@ private:
         MENU,
         BETTING,
         PLAYING,
-        RESULT
+        RESULT,
+        GAME_OVER
     };
     GUIState currentState;
     
@@ -26,6 +27,7 @@ private:
     sf::RectangleShape doubleButton;
     sf::RectangleShape playButton;
     sf::RectangleShape nextRoundButton;
+    sf::RectangleShape restartButton;
     // Botones de apuesta
     sf::RectangleShape bet10Button;
     sf::RectangleShape bet50Button;
@@ -51,6 +53,7 @@ private:
     void drawBettingScreen();
     void drawGameScreen();
     void drawResultScreen();
+    void drawGameOverScreen();
     
     void drawCard(sf::Vector2f position, const Card& card, bool hidden = false);
     void drawButton(const sf::RectangleShape& btn, const std::string& text, sf::Color textColor = sf::Color::White);

@@ -79,6 +79,12 @@ void BlackjackGUI::initializeButtons() {
     dealButton.setSize(sf::Vector2f(150, 60));
     dealButton.setPosition(sf::Vector2f(565, 480));
     dealButton.setFillColor(sf::Color(100, 200, 100));
+
+    //Boton de reset round
+    restartButton.setSize(sf::Vector2f(300,60));
+    restartButton.setPosition(sf::Vector2f(490,400));
+    restartButton.setFillColor(sf::Color(255, 100, 100));
+
 }
 
 
@@ -141,6 +147,9 @@ void BlackjackGUI::render() {
             break;
         case GUIState::RESULT:
             drawResultScreen();
+            break;
+            case GUIState::GAME_OVER:
+            drawGameOverScreen();
             break;
     }
     window.display();
@@ -391,6 +400,45 @@ void BlackjackGUI::drawResultScreen() {
     drawButton(nextRoundButton, "NEXT ROUND");
 }
 
+void BlackjackGUI::drawGameOverScreen() {
+
+    //titulo
+    sf::Text title(font);
+    title.setString("GAME OVER");
+    title.setCharacterSize(45);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(480, 20));
+    window.draw(title);
+
+    //Boton para resetear
+    drawButton(restartButton, "PLAY AGAIN");
+
+    //Estadisticas de esa partida que puedan interesar
+    title.setString("STATISTICS");
+    title.setCharacterSize(24);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(280, 20));
+    window.draw(title);
+
+    title.setString("Wins: " + std::to_string(game->getWins()));
+    title.setCharacterSize(24);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(280, 50));
+    window.draw(title);
+
+    title.setString("Losses: " + std::to_string(game->getLosses()));
+    title.setCharacterSize(24);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(280, 90));
+    window.draw(title);
+
+    title.setString("Best Winstreak: " + std::to_string(game->getBestStreak()));
+    title.setCharacterSize(24);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(280, 130));
+    window.draw(title);
+}
+
 void BlackjackGUI::drawPlayerHand() {
     const Player& player = game->getPlayer();
     const auto& hand = player.getHand();
@@ -508,188 +556,203 @@ void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden
 
 
 void BlackjackGUI::handleClick() {
-switch (currentState) {
-    case GUIState::MENU:
-        if (mouseOver(playButton)) {
-            std::cout << "PLAY clicked - Cambiando a BETTING" << std::endl;
-            currentState = GUIState::BETTING;
-            currentBet = 0;
-        }
-        break;
-
-    case GUIState::BETTING:// Botón +$10
-        if (mouseOver(bet10Button)) {
-            if (currentBet + 10 <= game->getPlayerMoney()) {
-                currentBet += 10;
-                std::cout << "Apuesta: $" << currentBet << std::endl;
+    switch (currentState) {
+        case GUIState::MENU:
+            if (mouseOver(playButton)) {
+                std::cout << "PLAY clicked - Cambiando a BETTING" << std::endl;
+                currentState = GUIState::BETTING;
+                currentBet = 0;
             }
-        }
+            break;
 
-        // Botón +$50
-        if (mouseOver(bet50Button)) {
-            if (currentBet + 50 <= game->getPlayerMoney()) {
-                currentBet += 50;
-                std::cout << "Apuesta: $" << currentBet << std::endl;
+        case GUIState::BETTING:// Botón +$10
+            if (mouseOver(bet10Button)) {
+                if (currentBet + 10 <= game->getPlayerMoney()) {
+                    currentBet += 10;
+                    std::cout << "Apuesta: $" << currentBet << std::endl;
+                }
             }
-        }
 
-        // Botón +$100
-        if (mouseOver(bet100Button)) {
-            if (currentBet + 100 <= game->getPlayerMoney()) {
-                currentBet += 100;
-                std::cout << "Apuesta: $" << currentBet << std::endl;
+            // Botón +$50
+            if (mouseOver(bet50Button)) {
+                if (currentBet + 50 <= game->getPlayerMoney()) {
+                    currentBet += 50;
+                    std::cout << "Apuesta: $" << currentBet << std::endl;
+                }
             }
-        }
 
-        // Botón CLEAR
-        if (mouseOver(clearBetButton)) {
-            currentBet = 0;
-            std::cout << "Apuesta limpiada" << std::endl;
-        }
+            // Botón +$100
+            if (mouseOver(bet100Button)) {
+                if (currentBet + 100 <= game->getPlayerMoney()) {
+                    currentBet += 100;
+                    std::cout << "Apuesta: $" << currentBet << std::endl;
+                }
+            }
 
-        // Botón DEAL
-        if (mouseOver(dealButton) && currentBet > 0) {
-            if (game->placeBet(currentBet)) {
-                std::cout << "Iniciando ronda con apuesta: $" << currentBet << std::endl;
-                game->startRound();
-                if (game->getState()==GameState::ROUND_END) {
-                    RoundResult roundResult = game->finishRound();
-                    // Mensaje según resultado
-                    switch (roundResult.outcome) {
-                        case RoundResult::Outcome::PLAYER_WIN:
-                            resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
-                            break;
-                        case RoundResult::Outcome::DEALER_WIN:
-                            resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
-                            break;
-                        case RoundResult::Outcome::TIE:
-                            resultMessage = "TIE! Push";
-                            break;
-                        case RoundResult::Outcome::PLAYER_BLACKJACK:
-                            resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
-                            break;
-                        case RoundResult::Outcome::DEALER_BLACKJACK:
-                            resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
-                            break;
-                        case RoundResult::Outcome::PLAYER_BUST:
-                            resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
-                            break;
-                        case RoundResult::Outcome::DEALER_BUST:
-                            resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
-                            break;
-                        case RoundResult::Outcome::BOTH_BLACKJACK:
-                            resultMessage = "BOTH BLACKJACK! Push";
-                            break;
+            // Botón CLEAR
+            if (mouseOver(clearBetButton)) {
+                currentBet = 0;
+                std::cout << "Apuesta limpiada" << std::endl;
+            }
+
+            // Botón DEAL
+            if (mouseOver(dealButton) && currentBet > 0) {
+                if (game->placeBet(currentBet)) {
+                    std::cout << "Iniciando ronda con apuesta: $" << currentBet << std::endl;
+                    game->startRound();
+                    if (game->getState()==GameState::ROUND_END) {
+                        RoundResult roundResult = game->finishRound();
+                        // Mensaje según resultado
+                        switch (roundResult.outcome) {
+                            case RoundResult::Outcome::PLAYER_WIN:
+                                resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
+                                break;
+                            case RoundResult::Outcome::DEALER_WIN:
+                                resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
+                                break;
+                            case RoundResult::Outcome::TIE:
+                                resultMessage = "TIE! Push";
+                                break;
+                            case RoundResult::Outcome::PLAYER_BLACKJACK:
+                                resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
+                                break;
+                            case RoundResult::Outcome::DEALER_BLACKJACK:
+                                resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
+                                break;
+                            case RoundResult::Outcome::PLAYER_BUST:
+                                resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
+                                break;
+                            case RoundResult::Outcome::DEALER_BUST:
+                                resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
+                                break;
+                            case RoundResult::Outcome::BOTH_BLACKJACK:
+                                resultMessage = "BOTH BLACKJACK! Push";
+                                break;
+                        }
+                        currentState = GUIState::RESULT;
                     }
-                    currentState = GUIState::RESULT;
+                    else{
+                        currentState = GUIState::PLAYING;
+                    }
                 }
-                else{
-                    currentState = GUIState::PLAYING;
-                }
             }
-        }
-        break;
+            break;
 
-    case GUIState::PLAYING:
-        // Botón HIT
-        if (mouseOver(hitButton)) {
-            std::cout << "HIT clicked" << std::endl;
-            PlayerActionResult result = game->playerHit();
-
-            if (result == PlayerActionResult::BUST) {
-                std::cout << "¡TE PASASTE!" << std::endl;
-                // Terminar ronda inmediatamente
-                game->playDealerTurn();
-                RoundResult roundResult = game->finishRound();
-                resultMessage = "YOU BUSTED! DEALER WINS";
-                currentState = GUIState::RESULT;
-            }
-            else if (result == PlayerActionResult::BLACKJACK) {
-                std::cout << "¡BLACKJACK! (21)" << std::endl;
-            }
-        }
-
-        // Botón STAND
-        else if (mouseOver(standButton)) {
-            std::cout << "STAND clicked" << std::endl;
-            game->playerStand();
-
-            // Dealer juega
-            game->playDealerTurn();
-
-            // Determinar ganador
-            RoundResult roundResult = game->finishRound();
-
-            // Mensaje según resultado
-            switch (roundResult.outcome) {
-                case RoundResult::Outcome::PLAYER_WIN:
-                    resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
-                    break;
-                case RoundResult::Outcome::DEALER_WIN:
-                    resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
-                    break;
-                case RoundResult::Outcome::TIE:
-                    resultMessage = "TIE! Push";
-                    break;
-                case RoundResult::Outcome::PLAYER_BLACKJACK:
-                    resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
-                    break;
-                case RoundResult::Outcome::DEALER_BLACKJACK:
-                    resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
-                    break;
-                case RoundResult::Outcome::PLAYER_BUST:
-                    resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
-                    break;
-                case RoundResult::Outcome::DEALER_BUST:
-                    resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
-                    break;
-                case RoundResult::Outcome::BOTH_BLACKJACK:
-                    resultMessage = "BOTH BLACKJACK! Push";
-                    break;
-            }
-
-            currentState = GUIState::RESULT;
-        }
-
-        // Botón DOUBLE
-        else if (mouseOver(doubleButton)) {
-            if (game->getPlayer().getHandSize() == 2 && game->getPlayerMoney() >= game->getCurrentBet()) {
-                std::cout << "DOUBLE clicked" << std::endl;
-                PlayerActionResult result = game->playerDoubleDown();
-
-                // Después de double, siempre pasa al dealer
-                game->playDealerTurn();
-                RoundResult roundResult = game->finishRound();
+        case GUIState::PLAYING:
+            // Botón HIT
+            if (mouseOver(hitButton)) {
+                std::cout << "HIT clicked" << std::endl;
+                PlayerActionResult result = game->playerHit();
 
                 if (result == PlayerActionResult::BUST) {
-                    resultMessage = "BUSTED AFTER DOUBLE! -$" + std::to_string(-roundResult.moneyChange);
-                } else {
-                    switch (roundResult.outcome) {
-                        case RoundResult::Outcome::PLAYER_WIN:
-                            resultMessage = "DOUBLE WIN! +$" + std::to_string(roundResult.moneyChange);
-                            break;
-                        case RoundResult::Outcome::DEALER_WIN:
-                            resultMessage = "DOUBLE LOSS! -$" + std::to_string(-roundResult.moneyChange);
-                            break;
-                        default:
-                            resultMessage = "DOUBLE TIE! Push";
-                            break;
-                    }
+                    std::cout << "¡TE PASASTE!" << std::endl;
+                    // Terminar ronda inmediatamente
+                    game->playDealerTurn();
+                    RoundResult roundResult = game->finishRound();
+                    resultMessage = "YOU BUSTED! DEALER WINS";
+                    currentState = GUIState::RESULT;
+                }
+                else if (result == PlayerActionResult::BLACKJACK) {
+                    std::cout << "¡BLACKJACK! (21)" << std::endl;
+                }
+            }
+
+            // Botón STAND
+            else if (mouseOver(standButton)) {
+                std::cout << "STAND clicked" << std::endl;
+                game->playerStand();
+
+                // Dealer juega
+                game->playDealerTurn();
+
+                // Determinar ganador
+                RoundResult roundResult = game->finishRound();
+
+                // Mensaje según resultado
+                switch (roundResult.outcome) {
+                    case RoundResult::Outcome::PLAYER_WIN:
+                        resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
+                        break;
+                    case RoundResult::Outcome::DEALER_WIN:
+                        resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
+                        break;
+                    case RoundResult::Outcome::TIE:
+                        resultMessage = "TIE! Push";
+                        break;
+                    case RoundResult::Outcome::PLAYER_BLACKJACK:
+                        resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
+                        break;
+                    case RoundResult::Outcome::DEALER_BLACKJACK:
+                        resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
+                        break;
+                    case RoundResult::Outcome::PLAYER_BUST:
+                        resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
+                        break;
+                    case RoundResult::Outcome::DEALER_BUST:
+                        resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
+                        break;
+                    case RoundResult::Outcome::BOTH_BLACKJACK:
+                        resultMessage = "BOTH BLACKJACK! Push";
+                        break;
                 }
 
                 currentState = GUIState::RESULT;
             }
-        }
-        break;
 
-    case GUIState::RESULT:
-        if (mouseOver(nextRoundButton)) {
-            game->resetForNewRound();
-            resultMessage.clear();
-            std::cout << "NEXT ROUND clicked - Cambiando a BETTING" << std::endl;
-            currentBet=0;
-            currentState=GUIState::BETTING;
-        }
+            // Botón DOUBLE
+            else if (mouseOver(doubleButton)) {
+                if (game->getPlayer().getHandSize() == 2 && game->getPlayerMoney() >= game->getCurrentBet()) {
+                    std::cout << "DOUBLE clicked" << std::endl;
+                    PlayerActionResult result = game->playerDoubleDown();
+
+                    // Después de double, siempre pasa al dealer
+                    game->playDealerTurn();
+                    RoundResult roundResult = game->finishRound();
+
+                    if (result == PlayerActionResult::BUST) {
+                        resultMessage = "BUSTED AFTER DOUBLE! -$" + std::to_string(-roundResult.moneyChange);
+                    } else {
+                        switch (roundResult.outcome) {
+                            case RoundResult::Outcome::PLAYER_WIN:
+                                resultMessage = "DOUBLE WIN! +$" + std::to_string(roundResult.moneyChange);
+                                break;
+                            case RoundResult::Outcome::DEALER_WIN:
+                                resultMessage = "DOUBLE LOSS! -$" + std::to_string(-roundResult.moneyChange);
+                                break;
+                            default:
+                                resultMessage = "DOUBLE TIE! Push";
+                                break;
+                        }
+                    }
+
+                    currentState = GUIState::RESULT;
+                }
+            }
+            break;
+
+        case GUIState::RESULT:
+
+            if (mouseOver(nextRoundButton)) {
+                if (!game->canContinue()) {
+                    currentState= GUIState::GAME_OVER;
+                }
+                else{
+                    resultMessage.clear();
+                    currentBet=0;
+                    game->resetForNewRound();
+                    std::cout << "NEXT ROUND clicked - Cambiando a BETTING" << std::endl;
+                    currentState=GUIState::BETTING;
+                }
+            }
+            break;
+
+        case GUIState::GAME_OVER:
+            if (mouseOver(restartButton)) {
+                delete game;
+                game = new Game("Jugador", 1000);
+                currentBet=0;
+                currentState=GUIState::BETTING;
+            }
         break;
     }
 }
