@@ -60,6 +60,8 @@ private:
     void drawButton(const sf::RectangleShape& btn, const std::string& text, sf::Color textColor = sf::Color::White);
     void drawPlayerHand();
     void drawDealerHand(bool hideFirst = true);
+
+    std::string buildResultMessage(const RoundResult& r, bool doubled) const;
     
     bool mouseOver(const sf::RectangleShape& rect) const;
     void initializeButtons();
