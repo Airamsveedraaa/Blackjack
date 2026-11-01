@@ -367,17 +367,26 @@ void BlackjackGUI::drawResultScreen() {
     resultText.setCharacterSize(38);
 
     // Color según resultado
-    if (resultMessage.find("WIN") != std::string::npos ||
-        resultMessage.find("BLACKJACK") != std::string::npos) {
-        resultText.setFillColor(sf::Color::Green);
-    }
-    else if (resultMessage.find("BUST") != std::string::npos ||
-             resultMessage.find("LOSS") != std::string::npos ||
-             resultMessage.find("DEALER WINS") != std::string::npos) {
-        resultText.setFillColor(sf::Color::Red);
-    }
-    else {
-        resultText.setFillColor(sf::Color::Yellow);
+    switch (lastOutcome ) {
+
+        using enum RoundResult::Outcome;
+        case PLAYER_WIN:
+        case PLAYER_BLACKJACK:
+        case DEALER_BUST:
+            resultText.setFillColor(sf::Color::Green);
+        break;
+
+        case DEALER_BLACKJACK:
+        case DEALER_WIN:
+        case PLAYER_BUST:
+            resultText.setFillColor(sf::Color::Red);
+        break;
+
+        case TIE:
+        case BOTH_BLACKJACK:
+            resultText.setFillColor(sf::Color::Yellow);
+        break;
+
     }
 
     // Centrar texto del resultado
@@ -606,27 +615,35 @@ void BlackjackGUI::handleClick() {
                         switch (roundResult.outcome) {
                             case RoundResult::Outcome::PLAYER_WIN:
                                 resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::DEALER_WIN:
                                 resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::TIE:
                                 resultMessage = "TIE! Push";
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::PLAYER_BLACKJACK:
                                 resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::DEALER_BLACKJACK:
                                 resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::PLAYER_BUST:
                                 resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::DEALER_BUST:
                                 resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::BOTH_BLACKJACK:
                                 resultMessage = "BOTH BLACKJACK! Push";
+                                lastOutcome=roundResult.outcome;
                                 break;
                         }
                         currentState = GUIState::RESULT;
@@ -650,6 +667,7 @@ void BlackjackGUI::handleClick() {
                     game->playDealerTurn();
                     RoundResult roundResult = game->finishRound();
                     resultMessage = "YOU BUSTED! DEALER WINS";
+                    lastOutcome=roundResult.outcome;
                     currentState = GUIState::RESULT;
                 }
                 else if (result == PlayerActionResult::BLACKJACK) {
@@ -672,27 +690,35 @@ void BlackjackGUI::handleClick() {
                 switch (roundResult.outcome) {
                     case RoundResult::Outcome::PLAYER_WIN:
                         resultMessage = "YOU WIN! +$" + std::to_string(roundResult.moneyChange);
+                        lastOutcome=roundResult.outcome;
                         break;
                     case RoundResult::Outcome::DEALER_WIN:
                         resultMessage = "DEALER WINS! -$" + std::to_string(-roundResult.moneyChange);
+                        lastOutcome=roundResult.outcome;
                         break;
                     case RoundResult::Outcome::TIE:
                         resultMessage = "TIE! Push";
+                        lastOutcome=roundResult.outcome;
                         break;
                     case RoundResult::Outcome::PLAYER_BLACKJACK:
                         resultMessage = "BLACKJACK! +$" + std::to_string(roundResult.moneyChange);
+                        lastOutcome=roundResult.outcome;
                         break;
                     case RoundResult::Outcome::DEALER_BLACKJACK:
                         resultMessage = "DEALER BLACKJACK! -$" + std::to_string(-roundResult.moneyChange);
+                        lastOutcome=roundResult.outcome;
                         break;
                     case RoundResult::Outcome::PLAYER_BUST:
                         resultMessage = "BUST! -$" + std::to_string(-roundResult.moneyChange);
+                        lastOutcome=roundResult.outcome;
                         break;
                     case RoundResult::Outcome::DEALER_BUST:
                         resultMessage = "DEALER BUST! +$" + std::to_string(roundResult.moneyChange);
+                        lastOutcome=roundResult.outcome;
                         break;
                     case RoundResult::Outcome::BOTH_BLACKJACK:
                         resultMessage = "BOTH BLACKJACK! Push";
+                        lastOutcome=roundResult.outcome;
                         break;
                 }
 
@@ -711,16 +737,20 @@ void BlackjackGUI::handleClick() {
 
                     if (result == PlayerActionResult::BUST) {
                         resultMessage = "BUSTED AFTER DOUBLE! -$" + std::to_string(-roundResult.moneyChange);
+                        lastOutcome=roundResult.outcome;
                     } else {
                         switch (roundResult.outcome) {
                             case RoundResult::Outcome::PLAYER_WIN:
                                 resultMessage = "DOUBLE WIN! +$" + std::to_string(roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             case RoundResult::Outcome::DEALER_WIN:
                                 resultMessage = "DOUBLE LOSS! -$" + std::to_string(-roundResult.moneyChange);
+                                lastOutcome=roundResult.outcome;
                                 break;
                             default:
                                 resultMessage = "DOUBLE TIE! Push";
+                                lastOutcome=roundResult.outcome;
                                 break;
                         }
                     }

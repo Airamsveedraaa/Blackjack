@@ -37,6 +37,7 @@ private:
     
     int currentBet;
     std::string resultMessage;
+    RoundResult::Outcome lastOutcome;
     void handleClick();
 
 public:
