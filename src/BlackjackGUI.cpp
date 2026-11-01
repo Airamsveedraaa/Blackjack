@@ -282,7 +282,7 @@ void BlackjackGUI::drawGameScreen() {
     dealerLabel.setString("DEALER");
     dealerLabel.setCharacterSize(22);
     dealerLabel.setFillColor(sf::Color::Yellow);
-    dealerLabel.setPosition(sf::Vector2f(50, 110));
+    dealerLabel.setPosition(sf::Vector2f(120, 130));
     window.draw(dealerLabel);
 
     // Dibujar mano del dealer (primera carta oculta)
@@ -296,7 +296,7 @@ void BlackjackGUI::drawGameScreen() {
     playerLabel.setString("PLAYER");
     playerLabel.setCharacterSize(22);
     playerLabel.setFillColor(sf::Color::Yellow);
-    playerLabel.setPosition(sf::Vector2f(50, 380));
+    playerLabel.setPosition(sf::Vector2f(120, 410));
     window.draw(playerLabel);
 
     // Dibujar mano del jugador
@@ -341,7 +341,7 @@ void BlackjackGUI::drawResultScreen() {
     dealerLabel.setString("DEALER");
     dealerLabel.setCharacterSize(22);
     dealerLabel.setFillColor(sf::Color::Yellow);
-    dealerLabel.setPosition(sf::Vector2f(50, 80));
+    dealerLabel.setPosition(sf::Vector2f(120, 130));
     window.draw(dealerLabel);
 
     // Mostrar todas las cartas del dealer (reveladas)
@@ -355,7 +355,7 @@ void BlackjackGUI::drawResultScreen() {
     playerLabel.setString("PLAYER");
     playerLabel.setCharacterSize(22);
     playerLabel.setFillColor(sf::Color::Yellow);
-    playerLabel.setPosition(sf::Vector2f(50, 310));
+    playerLabel.setPosition(sf::Vector2f(120, 410));
     window.draw(playerLabel);
 
     // Mostrar cartas del jugador
@@ -383,8 +383,8 @@ void BlackjackGUI::drawResultScreen() {
     // Centrar texto del resultado
     sf::FloatRect textBounds = resultText.getLocalBounds();
     resultText.setPosition(sf::Vector2f(
-        640 - textBounds.size.x / 2.0f,
-        520
+        700 - textBounds.size.x / 2.0f,
+        540
     ));
     window.draw(resultText);
 
@@ -393,7 +393,7 @@ void BlackjackGUI::drawResultScreen() {
     moneyText.setString("Money: $" + std::to_string(game->getPlayerMoney()));
     moneyText.setCharacterSize(28);
     moneyText.setFillColor(sf::Color::Yellow);
-    moneyText.setPosition(sf::Vector2f(540, 630));
+    moneyText.setPosition(sf::Vector2f(770, 610));
     window.draw(moneyText);
 
     // Botón siguiente ronda
@@ -733,7 +733,7 @@ void BlackjackGUI::handleClick() {
         case GUIState::RESULT:
 
             if (mouseOver(nextRoundButton)) {
-                if (!game->canContinue()) {
+                if (!game->canContinue() || game->getPlayerMoney() < 10) {
                     currentState= GUIState::GAME_OVER;
                 }
                 else{
