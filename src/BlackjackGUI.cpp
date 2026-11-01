@@ -665,7 +665,7 @@ void BlackjackGUI::handleClick() {
             else if (mouseOver(doubleButton)) {
                 if (game->getPlayer().getHandSize() == 2 && game->getPlayerMoney() >= game->getCurrentBet()) {
                     std::cout << "DOUBLE clicked" << std::endl;
-                    PlayerActionResult result = game->playerDoubleDown();
+                    game->playerDoubleDown();
 
                     // Después de double, siempre pasa al dealer
                     game->playDealerTurn();
@@ -675,7 +675,7 @@ void BlackjackGUI::handleClick() {
 
                         lastOutcome = roundResult.outcome;
                         resultMessage = buildResultMessage(roundResult,true);
-                    
+
 
                     currentState = GUIState::RESULT;
                 }

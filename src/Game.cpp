@@ -34,7 +34,7 @@ void Game::startRound() {
     dealer.addCard(deck.dealCard());
 
     state=GameState::PLAYER_TURN; //pasamos a turno de player justo al repartir
-    if (hasBlackjack(player.getHandValue(),player.getHandSize())) {
+    if (hasBlackjack(player.getHandValue(),player.getHandSize()) || hasBlackjack(dealer.getHandValue(), dealer.getHandSize())) {
         state=GameState::ROUND_END;
     }
 
