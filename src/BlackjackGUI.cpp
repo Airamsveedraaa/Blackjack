@@ -383,7 +383,7 @@ void BlackjackGUI::drawResultScreen() {
     // Centrar texto del resultado
     sf::FloatRect textBounds = resultText.getLocalBounds();
     resultText.setPosition(sf::Vector2f(
-        700 - textBounds.size.x / 2.0f,
+        640 - textBounds.size.x / 2.0f,
         540
     ));
     window.draw(resultText);
@@ -733,7 +733,7 @@ void BlackjackGUI::handleClick() {
         case GUIState::RESULT:
 
             if (mouseOver(nextRoundButton)) {
-                if (!game->canContinue() || game->getPlayerMoney() < 10) {
+                if (!game->canContinue()) {
                     currentState= GUIState::GAME_OVER;
                 }
                 else{

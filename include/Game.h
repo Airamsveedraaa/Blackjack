@@ -55,6 +55,7 @@ private:
     int playerMoney;
     int currentBet;
     GameState state;
+    static constexpr int MIN_BET = 10;
 
     // Estadísticas
     int initialMoney;
@@ -80,7 +81,7 @@ public:
     GameState getState() const { return state; }
     int getPlayerMoney() const { return playerMoney; }
     int getCurrentBet() const { return currentBet; }
-    bool canContinue() const { return playerMoney > 0; }
+    bool canContinue() const { return playerMoney >= MIN_BET; }
 
     // Acceso a jugadores
     const Player& getPlayer() const { return player; }
