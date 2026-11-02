@@ -85,6 +85,16 @@ void BlackjackGUI::initializeButtons() {
     restartButton.setPosition(sf::Vector2f(490,400));
     restartButton.setFillColor(sf::Color(255, 100, 100));
 
+    //Boton de stats
+    statsButton.setSize(sf::Vector2f(200,60));
+    statsButton.setPosition(sf::Vector2f(540, 480));
+    statsButton.setFillColor(sf::Color(100, 200, 100));
+
+    //Boton back
+    backButton.setSize(sf::Vector2f(300,60));
+    backButton.setPosition(sf::Vector2f(560, 480));
+    backButton.setFillColor(sf::Color(100, 100, 100));
+
 }
 
 
@@ -151,6 +161,9 @@ void BlackjackGUI::render() {
             case GUIState::GAME_OVER:
             drawGameOverScreen();
             break;
+        case GUIState::STATS:
+            drawStatsScreen();
+            break;
     }
     window.display();
 }
@@ -208,6 +221,15 @@ void BlackjackGUI::drawMenu() {
     instructions.setFillColor(sf::Color(200, 200, 200));
     instructions.setPosition({560, 650});
     window.draw(instructions);
+
+    //Stats
+    sf::Text title2(font);
+    title2.setString("STATS");
+    title2.setCharacterSize(80);
+    title2.setFillColor(sf::Color::White);
+    title2.setPosition({400, 200});
+    window.draw(title2);
+
 }
 
 
@@ -446,6 +468,10 @@ void BlackjackGUI::drawGameOverScreen() {
     title.setFillColor(sf::Color::White);
     title.setPosition(sf::Vector2f(280, 130));
     window.draw(title);
+}
+
+void BlackjackGUI::drawStatsScreen() {
+
 }
 
 void BlackjackGUI::drawPlayerHand() {
@@ -706,6 +732,13 @@ void BlackjackGUI::handleClick() {
                 currentState=GUIState::BETTING;
             }
         break;
+
+        case GUIState::STATS:
+            if (mouseOver(statsButton)) {
+                currentState = GUIState::STATS;
+                drawStatsScreen();
+            }
+            break;
     }
 }
 
