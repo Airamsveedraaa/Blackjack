@@ -40,7 +40,7 @@ A Blackjack game written in C++20 with a graphical interface built on **SFML 3**
 
 ### Requirements
 
-- **Windows** (see [Known limitations](#known-limitations)).
+- Tested on **Windows 11** with MinGW-w64 (see [Known limitations](#known-limitations)).
 - A C++20 compiler (MinGW-w64 or MSVC).
 - CMake 3.23 or newer.
 - SFML 3 (the Graphics, Window and System modules). The easiest way to get it is [vcpkg](https://github.com/microsoft/vcpkg).
@@ -56,8 +56,10 @@ A Blackjack game written in C++20 with a graphical interface built on **SFML 3**
 2. Configure the project, pointing CMake at the vcpkg toolchain file:
 
    ```bash
-   cmake -B build -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic
+   cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic
    ```
+
+   Always set `CMAKE_BUILD_TYPE` (`Release` or `Debug`). Without it, vcpkg may copy the wrong SFML DLLs and the game will not start.
 
 3. Build the version you want:
 
@@ -66,13 +68,15 @@ A Blackjack game written in C++20 with a graphical interface built on **SFML 3**
    cmake --build build --target Blackjack_Console
    ```
 
-4. Run `build/Blackjack_GUI.exe` (or `build/Blackjack_Console.exe`). The vcpkg toolchain copies the SFML DLLs next to the executable.
+4. Run `build/Blackjack_GUI.exe` (or `build/Blackjack_Console.exe`). After building, the vcpkg toolchain copies the SFML DLLs next to the executable, and CMake copies the `assets/` folder there too.
 
 **With CLion:** open the folder as a CMake project and add `-DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake` to the CMake options (*Settings → Build, Execution, Deployment → CMake*). Then choose the `Blackjack_GUI` run configuration.
 
+**Moving the game to another folder:** copy the executable together with its DLLs and the `assets/` folder. The game looks for `assets/fonts/DejaVuSans.ttf` relative to the folder it is run from. On a computer without MinGW installed, it also needs MinGW's runtime DLLs (`libstdc++-6.dll`, `libgcc_s_seh-1.dll`).
+
 ### Known limitations
 
-- **Windows only:** the font is loaded from `C:/Windows/Fonts/seguisym.ttf`, and both entry points use `<windows.h>` to set up UTF-8 output.
+- **Only tested on Windows.** The code no longer depends on Windows: the font ships with the project in `assets/`, and `<windows.h>` is only used under `#ifdef _WIN32` to enable UTF-8 console output. It should build on Linux and macOS with SFML 3, but this has not been tested yet.
 - Split and insurance are not implemented yet.
 
 ### Project structure
@@ -82,6 +86,8 @@ Blackjack/
 ├── CMakeLists.txt     # Targets: Blackjack_GUI and Blackjack_Console
 ├── main.cpp           # Console version
 ├── main_gui.cpp       # Graphical version
+├── assets/
+│   └── fonts/         # DejaVu Sans and its license (copied next to the executable when building)
 ├── include/           # Headers
 │   ├── BlackjackGUI.h # SFML interface (screens, buttons, state machine)
 │   ├── Game.h         # Game logic: bets, rounds, payouts, statistics
@@ -95,17 +101,22 @@ Blackjack/
 
 The game logic (`Game`) does no input or output on its own; the console version and the graphical version are two different front ends on top of it.
 
+### Credits
+
+- Font: [DejaVu Sans](https://github.com/dejavu-fonts/dejavu-fonts), distributed under its own license (Bitstream Vera and Arev). The full text is in [`assets/fonts/LICENSE`](assets/fonts/LICENSE).
+
 ### Versions
 
 | Version | Contents |
 |---|---|
+| *In development* | Phase 1: portable font (DejaVu Sans in `assets/`) and Windows-only code isolated behind `#ifdef _WIN32` |
 | **V2.0** | Complete graphical version: game over, dealer peek, 3:2 payout, result colors and a fixed result screen layout |
 | V1.1 | First graphical game screen (work in progress) |
 | V1.0 | Console version |
 
 ### Roadmap
 
-Next phase: a portable font (so the game runs outside Windows), split, an ALL IN or custom bet, insurance, a statistics screen and automated tests.
+Phase 1, in progress: ~~portable font~~ (done), statistics screen, split, an ALL IN or custom bet, insurance and automated tests.
 
 ---
 
@@ -145,7 +156,7 @@ Un juego de Blackjack escrito en C++20 con interfaz gráfica hecha con **SFML 3*
 
 ### Requisitos
 
-- **Windows** (mira [Limitaciones conocidas](#limitaciones-conocidas)).
+- Probado en **Windows 11** con MinGW-w64 (mira [Limitaciones conocidas](#limitaciones-conocidas)).
 - Un compilador de C++20 (MinGW-w64 o MSVC).
 - CMake 3.23 o superior.
 - SFML 3 (los módulos Graphics, Window y System). La forma más fácil de instalarlo es con [vcpkg](https://github.com/microsoft/vcpkg).
@@ -161,8 +172,10 @@ Un juego de Blackjack escrito en C++20 con interfaz gráfica hecha con **SFML 3*
 2. Configura el proyecto indicándole a CMake el toolchain de vcpkg:
 
    ```bash
-   cmake -B build -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=<raiz-de-vcpkg>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic
+   cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=<raiz-de-vcpkg>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic
    ```
+
+   Pon siempre `CMAKE_BUILD_TYPE` (`Release` o `Debug`). Sin él, vcpkg puede copiar las DLL de SFML equivocadas y el juego no arrancará.
 
 3. Compila la versión que quieras:
 
@@ -171,13 +184,15 @@ Un juego de Blackjack escrito en C++20 con interfaz gráfica hecha con **SFML 3*
    cmake --build build --target Blackjack_Console
    ```
 
-4. Ejecuta `build/Blackjack_GUI.exe` (o `build/Blackjack_Console.exe`). El toolchain de vcpkg copia las DLL de SFML junto al ejecutable.
+4. Ejecuta `build/Blackjack_GUI.exe` (o `build/Blackjack_Console.exe`). Al compilar, el toolchain de vcpkg copia las DLL de SFML junto al ejecutable, y CMake copia también la carpeta `assets/`.
 
 **Con CLion:** abre la carpeta como proyecto CMake y añade `-DCMAKE_TOOLCHAIN_FILE=<raiz-de-vcpkg>/scripts/buildsystems/vcpkg.cmake` a las opciones de CMake (*Settings → Build, Execution, Deployment → CMake*). Después elige la configuración de ejecución `Blackjack_GUI`.
 
+**Para llevar el juego a otra carpeta:** copia el ejecutable junto con sus DLL y la carpeta `assets/`. El juego busca `assets/fonts/DejaVuSans.ttf` a partir de la carpeta desde la que se ejecuta. En un ordenador sin MinGW instalado necesita además las DLL de MinGW (`libstdc++-6.dll`, `libgcc_s_seh-1.dll`).
+
 ### Limitaciones conocidas
 
-- **Solo Windows:** la fuente se carga desde `C:/Windows/Fonts/seguisym.ttf`, y los dos programas usan `<windows.h>` para activar la salida en UTF-8.
+- **Solo está probado en Windows.** El código ya no depende de Windows: la fuente viene con el proyecto en `assets/`, y `<windows.h>` solo se usa dentro de `#ifdef _WIN32` para activar la salida UTF-8 en la consola. Debería compilar en Linux y macOS con SFML 3, pero todavía no se ha probado.
 - El split y el seguro aún no están implementados.
 
 ### Estructura del proyecto
@@ -187,6 +202,8 @@ Blackjack/
 ├── CMakeLists.txt     # Targets: Blackjack_GUI y Blackjack_Console
 ├── main.cpp           # Versión de consola
 ├── main_gui.cpp       # Versión gráfica
+├── assets/
+│   └── fonts/         # DejaVu Sans y su licencia (se copian junto al ejecutable al compilar)
 ├── include/           # Cabeceras
 │   ├── BlackjackGUI.h # Interfaz SFML (pantallas, botones, máquina de estados)
 │   ├── Game.h         # Lógica del juego: apuestas, rondas, pagos, estadísticas
@@ -200,14 +217,19 @@ Blackjack/
 
 La lógica del juego (`Game`) no lee ni escribe nada por su cuenta: la versión de consola y la gráfica son dos interfaces distintas sobre la misma lógica.
 
+### Créditos
+
+- Fuente: [DejaVu Sans](https://github.com/dejavu-fonts/dejavu-fonts), distribuida con su propia licencia (Bitstream Vera y Arev). El texto completo está en [`assets/fonts/LICENSE`](assets/fonts/LICENSE).
+
 ### Versiones
 
 | Versión | Contenido |
 |---|---|
+| *En desarrollo* | Fase 1: fuente portátil (DejaVu Sans en `assets/`) y el código exclusivo de Windows aislado con `#ifdef _WIN32` |
 | **V2.0** | Versión gráfica completa: Game Over, dealer peek, pago 3:2, colores del resultado y pantalla de resultado corregida |
 | V1.1 | Primera pantalla de juego gráfica (en desarrollo) |
 | V1.0 | Versión de consola |
 
 ### Próximos pasos
 
-Siguiente fase: fuente portátil (para que funcione fuera de Windows), split, apuesta ALL IN o personalizada, seguro, pantalla de estadísticas y tests automáticos.
+Fase 1, en curso: ~~fuente portátil~~ (hecha), pantalla de estadísticas, split, apuesta ALL IN o personalizada, seguro y tests automáticos.

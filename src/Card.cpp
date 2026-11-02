@@ -21,8 +21,8 @@ int Card::getcard() const {
     return static_cast<int> (r);
 }
 
-string Card::toString() const {
-    string rankStr;
+std::string Card::toString() const {
+    std::string rankStr;
     switch (r) {
         case Rank::TWO: rankStr=  "2"; break;
         case Rank::THREE: rankStr= "3"; break;
@@ -39,7 +39,7 @@ string Card::toString() const {
         case Rank::ACE:  rankStr= "A"; break;
     }
 
-    string suitStr;
+    std::string suitStr;
     switch (s) {
         case Suit::Hearts:
             suitStr = "\u2665";
@@ -59,7 +59,7 @@ string Card::toString() const {
 }
 
 
-string Card::getCardString() const {
+std::string Card::getCardString() const {
 
     switch (r) {
         case Rank::TWO:   return "2";
@@ -81,7 +81,7 @@ string Card::getCardString() const {
 }
 
 
-string Card::getSuitString() const {
+std::string Card::getSuitString() const {
 
     switch (s) {
         case Suit::Hearts:   return "♥";  // ♥

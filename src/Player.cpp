@@ -52,15 +52,15 @@ int Player::getHandValue() const {
 
 void Player::showHand(bool showAll) const {
 
-    cout << name << "'s hand: " << endl;
+    std::cout << name << "'s hand: " << std::endl;
     for (size_t i = 0; i < hand.size(); i++) {
         if (!showAll && i==0) {
-            cout << "[HIDDEN]" << endl;
+            std::cout << "[HIDDEN]" << std::endl;
         }
         else {
-            cout << hand[i].toString() << " " <<  endl;
+            std::cout << hand[i].toString() << " " <<  std::endl;
         }
     }
 
-    cout << "(" << getHandValue() << ")\n" << endl;
+    std::cout << "(" << getHandValue() << ")\n" << std::endl;
 }

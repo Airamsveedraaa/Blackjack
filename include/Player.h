@@ -11,10 +11,10 @@ class Player {
 
 protected:
     char* name;
-    vector<Card> hand;
+    std::vector<Card> hand;
     int bet;
 public:
-    const vector<Card>& getHand() const {return hand;};
+    const std::vector<Card>& getHand() const {return hand;};
     size_t getHandSize() const {return hand.size();};
     const char* getName() {return name;};
     int getBet () const {return bet;};
