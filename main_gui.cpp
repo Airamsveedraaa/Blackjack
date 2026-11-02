@@ -1,9 +1,15 @@
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include "include/BlackjackGUI.h"
 #include <iostream>
-#include <windows.h>
+
 
 int main() {
+#ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
+#endif
+
 
     try {
         BlackjackGUI gui;

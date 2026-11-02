@@ -12,7 +12,7 @@ currentBet(0),
 resultMessage("")
 {
     window.setFramerateLimit(60);
-    if (!font.openFromFile("C:/Windows/Fonts/seguisym.ttf")) {
+    if (!font.openFromFile("assets/fonts/DejaVuSans.ttf")) {
         std::cerr << "Error: No se pudo cargar la fuente" << std::endl;
         throw std::runtime_error("No se pudo cargar la fuente");
     }
@@ -282,7 +282,7 @@ void BlackjackGUI::drawGameScreen() {
     dealerLabel.setString("DEALER");
     dealerLabel.setCharacterSize(22);
     dealerLabel.setFillColor(sf::Color::Yellow);
-    dealerLabel.setPosition(sf::Vector2f(120, 130));
+    dealerLabel.setPosition(sf::Vector2f(100, 130));
     window.draw(dealerLabel);
 
     // Dibujar mano del dealer (primera carta oculta)
@@ -296,7 +296,7 @@ void BlackjackGUI::drawGameScreen() {
     playerLabel.setString("PLAYER");
     playerLabel.setCharacterSize(22);
     playerLabel.setFillColor(sf::Color::Yellow);
-    playerLabel.setPosition(sf::Vector2f(120, 410));
+    playerLabel.setPosition(sf::Vector2f(100, 410));
     window.draw(playerLabel);
 
     // Dibujar mano del jugador
@@ -341,7 +341,7 @@ void BlackjackGUI::drawResultScreen() {
     dealerLabel.setString("DEALER");
     dealerLabel.setCharacterSize(22);
     dealerLabel.setFillColor(sf::Color::Yellow);
-    dealerLabel.setPosition(sf::Vector2f(120, 130));
+    dealerLabel.setPosition(sf::Vector2f(100, 130));
     window.draw(dealerLabel);
 
     // Mostrar todas las cartas del dealer (reveladas)
@@ -355,7 +355,7 @@ void BlackjackGUI::drawResultScreen() {
     playerLabel.setString("PLAYER");
     playerLabel.setCharacterSize(22);
     playerLabel.setFillColor(sf::Color::Yellow);
-    playerLabel.setPosition(sf::Vector2f(120, 410));
+    playerLabel.setPosition(sf::Vector2f(100, 410));
     window.draw(playerLabel);
 
     // Mostrar cartas del jugador

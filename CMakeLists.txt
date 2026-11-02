@@ -36,5 +36,11 @@ add_executable(Blackjack_GUI
         include/BlackjackGUI.h
 )
 
+add_custom_command(
+       TARGET Blackjack_GUI
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:Blackjack_GUI>/assets
+)
+
 # Linkear SFML 3 al ejecutable GUI
 target_link_libraries(Blackjack_GUI SFML::Graphics SFML::Window SFML::System)
