@@ -113,8 +113,8 @@ deck()
     totalBet = 0;
     deck.shuffle();
 
-    cout << "¡Bienvenido a la mesa de Blackjack, " << PlayerName << "!" << endl;
-    cout << "Dinero inicial: $" << playerMoney << endl << endl;
+    std::cout << "¡Bienvenido a la mesa de Blackjack, " << PlayerName << "!" << std::endl;
+    std::cout << "Dinero inicial: $" << playerMoney << std::endl << std::endl;
 }
 
 
@@ -152,26 +152,26 @@ void Game::playDealerTurn() {
 
 void Game::playRound() {
     // 1. Pedir apuesta (mantener cout/cin aquí)
-    cout << "\n--- NUEVA RONDA ---" << endl;
-    cout << "Tienes $" << playerMoney << endl;
-    cout << "¿Cuánto quieres apostar? ";
+    std::cout << "\n--- NUEVA RONDA ---" << std::endl;
+    std::cout << "Tienes $" << playerMoney << std::endl;
+    std::cout << "¿Cuánto quieres apostar? ";
     int bet;
-    cin >> bet;
-    cin.ignore();
+    std::cin >> bet;
+    std::cin.ignore();
 
     while (!placeBet(bet)) {
-        cout << "Apuesta inválida. Debe ser entre $1 y $" << playerMoney << ": ";
-        cin >> bet;
-        cin.ignore();
+        std::cout << "Apuesta inválida. Debe ser entre $1 y $" << playerMoney << ": ";
+        std::cin >> bet;
+        std::cin.ignore();
     }
 
-    cout << "Apostaste $" << currentBet << endl << endl;
+    std::cout << "Apostaste $" << currentBet << std::endl << std::endl;
 
     // 2. Iniciar ronda
     startRound();
 
     // 3. Mostrar cartas iniciales
-    cout << "--- CARTAS INICIALES ---" << endl;
+    std::cout << "--- CARTAS INICIALES ---" << std::endl;
     player.showHand();
     dealer.showHand(true);
 
@@ -180,13 +180,13 @@ void Game::playRound() {
     bool dealerBJ = hasBlackjack(dealer.getHandValue(), dealer.getHandSize());
 
     if (playerBJ) {
-        cout << "¡¡¡BLACKJACK NATURAL!!! 🎰" << endl;
+        std::cout << "¡¡¡BLACKJACK NATURAL!!! 🎰" << std::endl;
     }
 
     if (dealerBJ) {
-        cout << "\n--- El dealer revela sus cartas ---" << endl;
+        std::cout << "\n--- El dealer revela sus cartas ---" << std::endl;
         dealer.showHand(false);
-        cout << "El dealer tiene BLACKJACK..." << endl;
+        std::cout << "El dealer tiene BLACKJACK..." << std::endl;
     }
 
     // 5. Turno del jugador (si no hay Blackjack natural)
@@ -196,27 +196,27 @@ void Game::playRound() {
 
         while (playing) {
             if (firstTurn && playerMoney >= currentBet) {
-                cout << "Opciones: [H]it | [S]tand | [D]ouble Down: ";
+                std::cout << "Opciones: [H]it | [S]tand | [D]ouble Down: ";
             } else {
-                cout << "¿Quieres pedir carta? (H/S): ";
+                std::cout << "¿Quieres pedir carta? (H/S): ";
             }
 
             char resp;
-            cin >> resp;
-            cin.ignore();
+            std::cin >> resp;
+            std::cin.ignore();
             resp = toupper(resp);
 
             if (resp == 'H') {
                 PlayerActionResult result = playerHit();
-                cout << "\n--- Nueva carta ---" << endl;
+                std::cout << "\n--- Nueva carta ---" << std::endl;
                 player.showHand();
 
                 if (result == PlayerActionResult::BUST) {
-                    cout << "¡TE PASASTE!" << endl;
+                    std::cout << "¡TE PASASTE!" << std::endl;
                     playing = false;
                 }
                 else if (result == PlayerActionResult::BLACKJACK) {
-                    cout << "¡Tienes 21!" << endl;
+                    std::cout << "¡Tienes 21!" << std::endl;
                     playing = false;
                 }
 
@@ -224,26 +224,26 @@ void Game::playRound() {
             }
             else if (resp == 'S') {
                 playerStand();
-                cout << "Te plantas con " << player.getHandValue() << endl;
+                std::cout << "Te plantas con " << player.getHandValue() << std::endl;
                 playing = false;
             }
             else if (resp == 'D' && firstTurn && playerMoney >= currentBet) {
-                cout << "\n--- DOUBLE DOWN ---" << endl;
+                std::cout << "\n--- DOUBLE DOWN ---" << std::endl;
                 PlayerActionResult result = playerDoubleDown();
-                cout << "Doblas tu apuesta a $" << currentBet << endl;
-                cout << "Recibes una carta final:" << endl;
+                std::cout << "Doblas tu apuesta a $" << currentBet << std::endl;
+                std::cout << "Recibes una carta final:" << std::endl;
                 player.showHand();
 
                 if (result == PlayerActionResult::BUST) {
-                    cout << "¡TE PASASTE!" << endl;
+                    std::cout << "¡TE PASASTE!" << std::endl;
                 }
                 else {
-                    cout << "Te plantas con " << player.getHandValue() << endl;
+                    std::cout << "Te plantas con " << player.getHandValue() << std::endl;
                 }
                 playing = false;
             }
             else {
-                cout << "Opción no válida." << endl;
+                std::cout << "Opción no válida." << std::endl;
             }
         }
     }
@@ -251,57 +251,57 @@ void Game::playRound() {
     // 6. Turno del dealer
     if (!playerBJ && !dealerBJ && player.getHandValue() <= 21) {
         playDealerTurn();
-        cout << "\n--- TURNO DEL DEALER ---" << endl;
+        std::cout << "\n--- TURNO DEL DEALER ---" << std::endl;
         dealer.showHand(false);
 
         if (dealer.getHandValue() > 21) {
-            cout << "¡Dealer se pasó!" << endl;
+            std::cout << "¡Dealer se pasó!" << std::endl;
         } else {
-            cout << "Dealer se planta con " << dealer.getHandValue() << endl;
+            std::cout << "Dealer se planta con " << dealer.getHandValue() << std::endl;
         }
     }
 
     // 7. Determinar ganador
     RoundResult result = finishRound();
 
-    cout << "\n=== RESULTADO ===" << endl;
-    cout << "Jugador: " << result.playerValue << endl;
-    cout << "Dealer: " << result.dealerValue << endl;
+    std::cout << "\n=== RESULTADO ===" << std::endl;
+    std::cout << "Jugador: " << result.playerValue << std::endl;
+    std::cout << "Dealer: " << result.dealerValue << std::endl;
 
     switch (result.outcome) {
         case RoundResult::Outcome::PLAYER_WIN:
-            cout << "¡GANASTE! Tu mano es mejor." << endl;
+            std::cout << "¡GANASTE! Tu mano es mejor." << std::endl;
             break;
         case RoundResult::Outcome::DEALER_WIN:
-            cout << "Perdiste. La mano del dealer es mejor." << endl;
+            std::cout << "Perdiste. La mano del dealer es mejor." << std::endl;
             break;
         case RoundResult::Outcome::TIE:
-            cout << "¡EMPATE! Recuperas tu apuesta." << endl;
+            std::cout << "¡EMPATE! Recuperas tu apuesta." << std::endl;
             break;
         case RoundResult::Outcome::PLAYER_BLACKJACK:
-            cout << "¡¡¡BLACKJACK NATURAL!!! Ganas 1.5x tu apuesta 🎰💰" << endl;
+            std::cout << "¡¡¡BLACKJACK NATURAL!!! Ganas 1.5x tu apuesta 🎰💰" << std::endl;
             break;
         case RoundResult::Outcome::DEALER_BLACKJACK:
-            cout << "El dealer tiene Blackjack. Pierdes." << endl;
+            std::cout << "El dealer tiene Blackjack. Pierdes." << std::endl;
             break;
         case RoundResult::Outcome::BOTH_BLACKJACK:
-            cout << "¡EMPATE! Ambos tienen Blackjack." << endl;
+            std::cout << "¡EMPATE! Ambos tienen Blackjack." << std::endl;
             break;
         case RoundResult::Outcome::PLAYER_BUST:
-            cout << "¡Perdiste! Te pasaste de 21." << endl;
+            std::cout << "¡Perdiste! Te pasaste de 21." << std::endl;
             break;
         case RoundResult::Outcome::DEALER_BUST:
-            cout << "¡GANASTE! El dealer se pasó." << endl;
+            std::cout << "¡GANASTE! El dealer se pasó." << std::endl;
             break;
     }
 
     if (result.moneyChange > 0) {
-        cout << "Ganaste $" << result.moneyChange << endl;
+        std::cout << "Ganaste $" << result.moneyChange << std::endl;
     } else if (result.moneyChange < 0) {
-        cout << "Perdiste $" << (-result.moneyChange) << endl;
+        std::cout << "Perdiste $" << (-result.moneyChange) << std::endl;
     }
 
-    cout << "Dinero actual: $" << playerMoney << endl << endl;
+    std::cout << "Dinero actual: $" << playerMoney << std::endl << std::endl;
 
     // 8. Resetear
     resetForNewRound();
@@ -397,28 +397,28 @@ bool Game::hasBlackjack(int handValue, size_t numCards) const {
 
 
 void Game::showStatistics() const {
-    cout << "\n╔════════════════════════════════════╗" << endl;
-    cout << "║        ESTADÍSTICAS                ║" << endl;
-    cout << "╠════════════════════════════════════╣" << endl;
-    cout << "║ Victorias:           " << setw(12) << wins << " ║" << endl;
-    cout << "║ Derrotas:            " << setw(12) << losses << " ║" << endl;
-    cout << "║ Empates:             " << setw(12) << ties << " ║" << endl;
+    std::cout << "\n╔════════════════════════════════════╗" << std::endl;
+    std::cout << "║        ESTADÍSTICAS                ║" << std::endl;
+    std::cout << "╠════════════════════════════════════╣" << std::endl;
+    std::cout << "║ Victorias:           " << std::setw(12) << wins << " ║" << std::endl;
+    std::cout << "║ Derrotas:            " << std::setw(12) << losses << " ║" << std::endl;
+    std::cout << "║ Empates:             " << std::setw(12) << ties << " ║" << std::endl;
 
     int totalRounds = wins + losses + ties;
     if (totalRounds > 0) {
         double winRate = (double)wins / totalRounds * 100;
-        cout << "║ Win Rate:            " << setw(9) << fixed << setprecision(1) << winRate << "% ║" << endl;
+        std::cout << "║ Win Rate:            " << std::setw(9) << std::fixed << std::setprecision(1) << winRate << "% ║" << std::endl;
     }
 
-    cout << "║ Racha actual:        " << setw(12) << currentStreak << " ║" << endl;
-    cout << "║ Mejor racha:         " << setw(12) << bestStreak << " ║" << endl;
-    cout << "║ Blackjacks:          " << setw(12) << blackjacksHit << " ║" << endl;
-    cout << "║ Dinero máximo:      $" << setw(11) << maxMoney << " ║" << endl;
-    cout << "║ Total apostado:     $" << setw(11) << totalBet << " ║" << endl;
+    std::cout << "║ Racha actual:        " << std::setw(12) << currentStreak << " ║" << std::endl;
+    std::cout << "║ Mejor racha:         " << std::setw(12) << bestStreak << " ║" << std::endl;
+    std::cout << "║ Blackjacks:          " << std::setw(12) << blackjacksHit << " ║" << std::endl;
+    std::cout << "║ Dinero máximo:      $" << std::setw(11) << maxMoney << " ║" << std::endl;
+    std::cout << "║ Total apostado:     $" << std::setw(11) << totalBet << " ║" << std::endl;
 
     int netProfit = playerMoney - initialMoney;
-    cout << "║ Beneficio neto:     $" << setw(11) << netProfit << " ║" << endl;
-    cout << "╚════════════════════════════════════╝" << endl << endl;
+    std::cout << "║ Beneficio neto:     $" << std::setw(11) << netProfit << " ║" << std::endl;
+    std::cout << "╚════════════════════════════════════╝" << std::endl << std::endl;
 }
 
 

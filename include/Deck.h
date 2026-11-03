@@ -7,12 +7,11 @@
 #include "Card.h"
 #include "Comun.h"
 
-using namespace std;
 
 class Deck {
     private:
     int curr_indx; //current position on the deck, initially on 0
-    vector<Card> cards; //vector of cards type object
+    std::vector<Card> cards; //vector of cards type object
 
 public:
     int getRemainingCards() const {return cards.size() - curr_indx;};

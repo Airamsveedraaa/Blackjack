@@ -19,8 +19,8 @@ Deck::Deck(){
 
 
 void Deck::shuffle() {
-    random_device rd;
-    mt19937 g(rd());
+    std::random_device rd;
+    std::mt19937 g(rd());
     std::shuffle(cards.begin(),cards.end(),g);
     curr_indx=0;
 }
@@ -30,7 +30,7 @@ Card Deck::dealCard() {
 
     if (curr_indx< (int)cards.size()) {
         return cards[curr_indx++];
-    }throw out_of_range("No more cards in Deck");
+    }throw std::out_of_range("No more cards in Deck");
 }
 
 
