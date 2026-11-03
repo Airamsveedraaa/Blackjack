@@ -3,6 +3,7 @@
 //
 
 #include "BlackjackGUI.h"
+#include <format>
 
 
 BlackjackGUI::BlackjackGUI()
@@ -91,8 +92,8 @@ void BlackjackGUI::initializeButtons() {
     statsButton.setFillColor(sf::Color(100, 200, 100));
 
     //Boton back
-    backButton.setSize(sf::Vector2f(300,60));
-    backButton.setPosition(sf::Vector2f(560, 480));
+    backButton.setSize(sf::Vector2f(200,60));
+    backButton.setPosition(sf::Vector2f(540, 480));
     backButton.setFillColor(sf::Color(100, 100, 100));
 
 }
@@ -223,12 +224,7 @@ void BlackjackGUI::drawMenu() {
     window.draw(instructions);
 
     //Stats
-    sf::Text title2(font);
-    title2.setString("STATS");
-    title2.setCharacterSize(80);
-    title2.setFillColor(sf::Color::White);
-    title2.setPosition({400, 200});
-    window.draw(title2);
+    drawButton(statsButton, "STATS");
 
 }
 
@@ -451,27 +447,23 @@ void BlackjackGUI::drawGameOverScreen() {
     title.setPosition(sf::Vector2f(280, 20));
     window.draw(title);
 
-    title.setString("Wins: " + std::to_string(game->getWins()));
-    title.setCharacterSize(24);
-    title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(280, 50));
-    window.draw(title);
+    drawStats(280,50);
 
-    title.setString("Losses: " + std::to_string(game->getLosses()));
-    title.setCharacterSize(24);
-    title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(280, 90));
-    window.draw(title);
 
-    title.setString("Best Winstreak: " + std::to_string(game->getBestStreak()));
-    title.setCharacterSize(24);
-    title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(280, 130));
-    window.draw(title);
 }
 
 void BlackjackGUI::drawStatsScreen() {
+    //Estadisticas de esa partida que puedan interesar
+    sf::Text title(font);
+    title.setString("STATISTICS");
+    title.setCharacterSize(24);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(280, 20));
+    window.draw(title);
 
+    drawStats(280,50);
+
+    drawButton(backButton, "BACK");
 }
 
 void BlackjackGUI::drawPlayerHand() {
@@ -597,6 +589,9 @@ void BlackjackGUI::handleClick() {
                 std::cout << "PLAY clicked - Cambiando a BETTING" << std::endl;
                 currentState = GUIState::BETTING;
                 currentBet = 0;
+            }
+            else if (mouseOver(statsButton)) {
+                currentState = GUIState::STATS;
             }
             break;
 
@@ -733,10 +728,11 @@ void BlackjackGUI::handleClick() {
             }
         break;
 
-        case GUIState::STATS:
-            if (mouseOver(statsButton)) {
-                currentState = GUIState::STATS;
-                drawStatsScreen();
+    case GUIState::STATS:
+            if (mouseOver(backButton))
+            {
+                //back from stats menu
+                currentState = GUIState::MENU;
             }
             break;
     }
@@ -820,3 +816,58 @@ std::string BlackjackGUI::buildResultMessage(const RoundResult &r, bool doubled)
     }
     return "";
 }
+
+void BlackjackGUI::drawStats(float x, float y)
+    {
+    float lineY = y;
+    sf::Text title(font);
+    title.setString("Wins: " + std::to_string(game->getWins()));
+    title.setCharacterSize(24);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+    lineY+=40;
+
+    title.setString("Losses: " + std::to_string(game->getLosses()));
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+    lineY+=40;
+
+    title.setString("Ties: " + std::to_string(game->getTies()));
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+    lineY+=40;
+
+    title.setString("Best Winstreak: " + std::to_string(game->getBestStreak()));
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+    lineY+=40;
+
+    title.setString(std::format("Winrate: {:.1f}%", game->getWinRate()));
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+    lineY+=40;
+
+    title.setString("Blackjacks hitted: " + std::to_string(game->getBlackjacksHit()));
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+    lineY+=40;
+
+    title.setString("Max money: " + std::to_string(game->getMaxMoney()));
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+    lineY+=40;
+
+    title.setString("Total money Bet: " + std::to_string(game->getTotalBet()));
+    title.setPosition(sf::Vector2f(x, lineY));
+    window.draw(title);
+
+
+    }

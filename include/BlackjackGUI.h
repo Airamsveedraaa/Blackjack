@@ -59,6 +59,7 @@ private:
     void drawResultScreen();
     void drawGameOverScreen();
     void drawStatsScreen();
+    void drawStats(float x, float y);
     
     void drawCard(sf::Vector2f position, const Card& card, bool hidden = false);
     void drawButton(const sf::RectangleShape& btn, const std::string& text, sf::Color textColor = sf::Color::White);
