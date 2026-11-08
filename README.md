@@ -31,7 +31,8 @@ A Blackjack game written in C++20 with a graphical interface built on **SFML 3**
 | Dealer | Hits below 17 and stands on any 17 |
 | Double down | Only with your first two cards, and only if you can cover the bet |
 | Dealer blackjack | Checked right after the deal (peek) |
-| Not available yet | Split, insurance |
+| Insurance | Offered when the dealer shows an Ace; costs half the bet and pays 2:1 |
+| Not available yet | Split |
 
 ### Controls
 
@@ -74,20 +75,33 @@ A Blackjack game written in C++20 with a graphical interface built on **SFML 3**
 
 **Moving the game to another folder:** copy the executable together with its DLLs and the `assets/` folder. The game looks for `assets/fonts/DejaVuSans.ttf` relative to the folder it is run from. On a computer without MinGW installed, it also needs MinGW's runtime DLLs (`libstdc++-6.dll`, `libgcc_s_seh-1.dll`).
 
+### Tests
+
+The `Blackjack_Tests` target checks the game logic (the `Game` class) without opening a window: payouts, dealer peek, insurance, doubling, the dealer's rules, statistics, plus thousands of random rounds that check rules that must always hold (for example, that money never goes negative).
+
+```bash
+cmake --build build --target Blackjack_Tests
+ctest --test-dir build --output-on-failure
+```
+
+You can also run `Blackjack_Tests` directly from CLion. It prints every failed check and exits with code 1 if anything fails.
+
 ### Known limitations
 
 - **Only tested on Windows.** The code no longer depends on Windows: the font ships with the project in `assets/`, and `<windows.h>` is only used under `#ifdef _WIN32` to enable UTF-8 console output. It should build on Linux and macOS with SFML 3, but this has not been tested yet.
-- Split and insurance are not implemented yet.
+- Split is not implemented yet.
 
 ### Project structure
 
 ```
 Blackjack/
-├── CMakeLists.txt     # Targets: Blackjack_GUI and Blackjack_Console
+├── CMakeLists.txt     # Targets: Blackjack_GUI, Blackjack_Console and Blackjack_Tests
 ├── main.cpp           # Console version
 ├── main_gui.cpp       # Graphical version
 ├── assets/
 │   └── fonts/         # DejaVu Sans and its license (copied next to the executable when building)
+├── tests/
+│   └── test_game.cpp  # Automated tests of the game logic
 ├── include/           # Headers
 │   ├── BlackjackGUI.h # SFML interface (screens, buttons, state machine)
 │   ├── Game.h         # Game logic: bets, rounds, payouts, statistics
@@ -116,7 +130,7 @@ The game logic (`Game`) does no input or output on its own; the console version 
 
 ### Roadmap
 
-Phase 1, in progress: ~~portable font~~ (done), statistics screen, split, an ALL IN or custom bet, insurance and automated tests.
+Phase 1 (gameplay improvements) is almost done: portable font, statistics screen, ALL IN bet, insurance and automated tests. Next: phase 2 (card sprites, dealing animation and sounds), phase 3 (saving progress and an options screen) and phase 4 (Linux build, cleanup and release V3.0). Split will come after that.
 
 ---
 
@@ -147,7 +161,8 @@ Un juego de Blackjack escrito en C++20 con interfaz gráfica hecha con **SFML 3*
 | Dealer | Pide carta por debajo de 17 y se planta con cualquier 17 |
 | Doblar | Solo con las dos primeras cartas y si te llega el dinero |
 | Blackjack del dealer | Se comprueba justo después del reparto (peek) |
-| Todavía no disponible | Split, seguro |
+| Seguro | Se ofrece cuando el dealer enseña un As; cuesta media apuesta y paga 2:1 |
+| Todavía no disponible | Split |
 
 ### Controles
 
@@ -190,20 +205,33 @@ Un juego de Blackjack escrito en C++20 con interfaz gráfica hecha con **SFML 3*
 
 **Para llevar el juego a otra carpeta:** copia el ejecutable junto con sus DLL y la carpeta `assets/`. El juego busca `assets/fonts/DejaVuSans.ttf` a partir de la carpeta desde la que se ejecuta. En un ordenador sin MinGW instalado necesita además las DLL de MinGW (`libstdc++-6.dll`, `libgcc_s_seh-1.dll`).
 
+### Tests
+
+El target `Blackjack_Tests` comprueba la lógica del juego (la clase `Game`) sin abrir ninguna ventana: pagos, dealer peek, seguro, doblar, las reglas del dealer, estadísticas y, además, miles de rondas al azar que comprueban reglas que se tienen que cumplir siempre (por ejemplo, que el dinero nunca sea negativo).
+
+```bash
+cmake --build build --target Blackjack_Tests
+ctest --test-dir build --output-on-failure
+```
+
+También puedes ejecutar `Blackjack_Tests` directamente desde CLion. Muestra cada comprobación que falla y termina con código 1 si falla alguna.
+
 ### Limitaciones conocidas
 
 - **Solo está probado en Windows.** El código ya no depende de Windows: la fuente viene con el proyecto en `assets/`, y `<windows.h>` solo se usa dentro de `#ifdef _WIN32` para activar la salida UTF-8 en la consola. Debería compilar en Linux y macOS con SFML 3, pero todavía no se ha probado.
-- El split y el seguro aún no están implementados.
+- El split aún no está implementado.
 
 ### Estructura del proyecto
 
 ```
 Blackjack/
-├── CMakeLists.txt     # Targets: Blackjack_GUI y Blackjack_Console
+├── CMakeLists.txt     # Targets: Blackjack_GUI, Blackjack_Console y Blackjack_Tests
 ├── main.cpp           # Versión de consola
 ├── main_gui.cpp       # Versión gráfica
 ├── assets/
 │   └── fonts/         # DejaVu Sans y su licencia (se copian junto al ejecutable al compilar)
+├── tests/
+│   └── test_game.cpp  # Tests automáticos de la lógica del juego
 ├── include/           # Cabeceras
 │   ├── BlackjackGUI.h # Interfaz SFML (pantallas, botones, máquina de estados)
 │   ├── Game.h         # Lógica del juego: apuestas, rondas, pagos, estadísticas
@@ -232,4 +260,4 @@ La lógica del juego (`Game`) no lee ni escribe nada por su cuenta: la versión 
 
 ### Próximos pasos
 
-Fase 1, en curso: ~~fuente portátil~~ (hecha), pantalla de estadísticas, split, apuesta ALL IN o personalizada, seguro y tests automáticos.
+La fase 1 (mejoras de juego) está casi terminada: fuente portátil, pantalla de estadísticas, apuesta ALL IN, seguro y tests automáticos. Después: fase 2 (sprites de cartas, animación de reparto y sonidos), fase 3 (guardar la partida y pantalla de opciones) y fase 4 (compilar en Linux, limpieza y release V3.0). El split vendrá después.

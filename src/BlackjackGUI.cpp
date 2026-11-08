@@ -362,7 +362,7 @@ void BlackjackGUI::drawGameScreen() {
     drawButton(standButton, "STAND");
 
     // Double solo si tiene 2 cartas y suficiente dinero
-    if (game->getPlayer().getHandSize() == 2 && game->getPlayerMoney() >= game->getCurrentBet()) {
+    if (game->canDoubleDown()) {
         drawButton(doubleButton, "DOUBLE");
     }
 }
@@ -772,7 +772,7 @@ void BlackjackGUI::handleClick() {
 
             // Botón DOUBLE
             else if (mouseOver(doubleButton)) {
-                if (game->getPlayer().getHandSize() == 2 && game->getPlayerMoney() >= game->getCurrentBet()) {
+                if (game->canDoubleDown()) {
                     std::cout << "DOUBLE clicked" << std::endl;
                     game->playerDoubleDown();
 

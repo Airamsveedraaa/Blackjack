@@ -114,6 +114,7 @@ public:
     PlayerActionResult playerHit();      // Jugador pide carta
     PlayerActionResult playerStand();    // Jugador se planta
     PlayerActionResult playerDoubleDown();  // Jugador dobla
+    bool canDoubleDown() const;          // Tiene 2 cartas y le llega el dinero para doblar
     void takeInsurance(bool yes);
 
     // Turno del dealer (automático)
@@ -130,6 +131,9 @@ public:
     // Seguro ante AS del dealer
     bool canOfferInsurance() const;
 
+    // Solo para tests: fija las proximas cartas del mazo
+    // (orden de reparto: jugador, dealer tapada, jugador, dealer visible, y despues las que se pidan)
+    void stackDeck(const std::vector<Card>& top) { deck.stackTop(top); }
 
 };
 

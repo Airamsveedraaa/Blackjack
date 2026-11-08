@@ -77,12 +77,17 @@ PlayerActionResult Game::playerStand() {
 }
 
 
+bool Game::canDoubleDown() const {
+    //el dinero no se descuenta hasta finishRound, asi que tiene que llegar para
+    //todo lo que quedaria apostado: la apuesta doble mas el seguro (si lo hay)
+    return state == GameState::PLAYER_TURN
+        && player.getHandSize() == 2
+        && playerMoney >= currentBet * 2 + insuranceBet;
+}
+
 PlayerActionResult Game::playerDoubleDown () {
-    if (state != GameState::PLAYER_TURN) {
-        return PlayerActionResult::CONTINUE; //si no es su turno, continúa el game
-    }
-    if (player.getHandSize() !=2 || playerMoney < currentBet) {
-        return PlayerActionResult::CONTINUE; //si no tiene para apostar, continua el juego
+    if (!canDoubleDown()) {
+        return PlayerActionResult::CONTINUE; //no es su turno, no tiene 2 cartas o no le llega el dinero
     }
 
     currentBet*=2;
@@ -213,7 +218,7 @@ void Game::playRound() {
         bool firstTurn = true;
 
         while (playing) {
-            if (firstTurn && playerMoney >= currentBet) {
+            if (firstTurn && canDoubleDown()) {
                 std::cout << "Opciones: [H]it | [S]tand | [D]ouble Down: ";
             } else {
                 std::cout << "¿Quieres pedir carta? (H/S): ";
@@ -245,7 +250,7 @@ void Game::playRound() {
                 std::cout << "Te plantas con " << player.getHandValue() << std::endl;
                 playing = false;
             }
-            else if (resp == 'D' && firstTurn && playerMoney >= currentBet) {
+            else if (resp == 'D' && firstTurn && canDoubleDown()) {
                 std::cout << "\n--- DOUBLE DOWN ---" << std::endl;
                 PlayerActionResult result = playerDoubleDown();
                 std::cout << "Doblas tu apuesta a $" << currentBet << std::endl;

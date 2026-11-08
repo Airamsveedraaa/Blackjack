@@ -39,3 +39,15 @@ bool Deck::isEmpty() const {
     return curr_indx >= (int)cards.size();
 
 }
+
+
+void Deck::stackTop(const std::vector<Card>& top) {
+    //las cartas indicadas salen primero; detras va un mazo completo barajado
+    //para que startRound no rebaraje (lo hace con 10 o menos cartas)
+    Deck rest;
+    rest.shuffle();
+
+    cards = top;
+    cards.insert(cards.end(), rest.cards.begin(), rest.cards.end());
+    curr_indx=0;
+}

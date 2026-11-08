@@ -19,6 +19,7 @@ public:
     void shuffle(); //shuffles the deck
     Card dealCard(); //gives card
     bool isEmpty() const; //checks if the deck is empty or not
+    void stackTop(const std::vector<Card>& top); //puts these cards first, then a full shuffled deck (for tests)
 };
 
 

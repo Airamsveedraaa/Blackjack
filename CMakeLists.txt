@@ -44,3 +44,16 @@ add_custom_command(
 
 # Linkear SFML 3 al ejecutable GUI
 target_link_libraries(Blackjack_GUI SFML::Graphics SFML::Window SFML::System)
+
+# Tests de la logica del juego (sin SFML)
+add_executable(Blackjack_Tests
+        tests/test_game.cpp
+        src/Card.cpp
+        src/Deck.cpp
+        src/Player.cpp
+        src/Dealer.cpp
+        src/Game.cpp
+)
+
+enable_testing()
+add_test(NAME game_tests COMMAND Blackjack_Tests)
