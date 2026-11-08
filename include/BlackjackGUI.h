@@ -66,12 +66,14 @@ private:
     void drawGameOverScreen();
     void drawStatsScreen();
     void drawInsuranceScreen();
+    void drawInsuranceGameScreen();
     void drawStats(float x, float y);
     
     void drawCard(sf::Vector2f position, const Card& card, bool hidden = false);
     void drawButton(const sf::RectangleShape& btn, const std::string& text, sf::Color textColor = sf::Color::White);
     void drawPlayerHand();
     void drawDealerHand(bool hideFirst = true);
+    void continueAfterDeal();
 
     std::string buildResultMessage(const RoundResult& r, bool doubled) const;
     

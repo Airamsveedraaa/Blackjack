@@ -412,6 +412,7 @@ RoundResult Game::finishRound() {
 
         playerMoney += insuranceResult;
         result.moneyChange += insuranceResult;
+        result.insuranceChange = insuranceResult;
 
     }
 

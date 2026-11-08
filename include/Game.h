@@ -27,6 +27,8 @@ struct RoundResult {
     int playerValue;
     int dealerValue;
     bool wasBlackjack;
+    int insuranceChange = 0;
+
 };
 
 
@@ -77,6 +79,7 @@ private:
 
 public:
     Game(const char* playerName, int initialMoney = 1000);
+
 
     // === MÉTODOS PARA GUI ===
 

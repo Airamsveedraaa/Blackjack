@@ -47,12 +47,12 @@ void BlackjackGUI::initializeButtons() {
     standButton.setFillColor(sf::Color(255, 100, 100));
 
     //Botones de INSURANCE
-    InsuranceYesButton.setSize(sf::Vector2f(120, 50));
+    InsuranceYesButton.setSize(sf::Vector2f(220, 50));
     InsuranceYesButton.setPosition({400, 600});
     InsuranceYesButton.setFillColor(sf::Color(100, 150, 255));
 
-    InsuranceNoButton.setSize(sf::Vector2f(120, 50));
-    InsuranceNoButton.setPosition({560, 600});
+    InsuranceNoButton.setSize(sf::Vector2f(220, 50));
+    InsuranceNoButton.setPosition({760, 600});
     InsuranceNoButton.setFillColor(sf::Color(255, 100, 100));
 
 
@@ -68,24 +68,24 @@ void BlackjackGUI::initializeButtons() {
 
     // Botones de apuesta
     bet10Button.setSize(sf::Vector2f(80, 50));
-    bet10Button.setPosition(sf::Vector2f(350, 380));
+    bet10Button.setPosition(sf::Vector2f(340, 380));
     bet10Button.setFillColor(sf::Color(100, 100, 255));
 
     bet50Button.setSize(sf::Vector2f(80, 50));
-    bet50Button.setPosition(sf::Vector2f(460, 380));
+    bet50Button.setPosition(sf::Vector2f(450, 380));
     bet50Button.setFillColor(sf::Color(100, 100, 255));
 
     bet100Button.setSize(sf::Vector2f(80, 50));
-    bet100Button.setPosition(sf::Vector2f(570, 380));
+    bet100Button.setPosition(sf::Vector2f(560, 380));
     bet100Button.setFillColor(sf::Color(100, 100, 255));
 
-    AllInButton.setSize(sf::Vector2f(80,50));
-    AllInButton.setPosition(sf::Vector2f(680, 380));
+    AllInButton.setSize(sf::Vector2f(150,50));
+    AllInButton.setPosition(sf::Vector2f(670, 380));
     AllInButton.setFillColor(sf::Color(100, 100, 255));
 
 
-    clearBetButton.setSize(sf::Vector2f(80, 50));
-    clearBetButton.setPosition(sf::Vector2f(790, 380));
+    clearBetButton.setSize(sf::Vector2f(150, 50));
+    clearBetButton.setPosition(sf::Vector2f(860, 380));
     clearBetButton.setFillColor(sf::Color(255, 100, 100));
 
     dealButton.setSize(sf::Vector2f(150, 60));
@@ -94,7 +94,7 @@ void BlackjackGUI::initializeButtons() {
 
     //Boton de reset round
     restartButton.setSize(sf::Vector2f(300,60));
-    restartButton.setPosition(sf::Vector2f(490,400));
+    restartButton.setPosition(sf::Vector2f(490,600));
     restartButton.setFillColor(sf::Color(255, 100, 100));
 
     //Boton de stats
@@ -455,8 +455,8 @@ void BlackjackGUI::drawGameOverScreen() {
     sf::Text title(font);
     title.setString("GAME OVER");
     title.setCharacterSize(45);
-    title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(480, 20));
+    title.setFillColor(sf::Color::Red);
+    title.setPosition(sf::Vector2f(490, 20));
     window.draw(title);
 
     //Boton para resetear
@@ -466,10 +466,10 @@ void BlackjackGUI::drawGameOverScreen() {
     title.setString("STATISTICS");
     title.setCharacterSize(24);
     title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(280, 20));
+    title.setPosition(sf::Vector2f(580, 120));
     window.draw(title);
 
-    drawStats(280,50);
+    drawStats(280,250);
 
 
 }
@@ -490,12 +490,64 @@ void BlackjackGUI::drawStatsScreen() {
 
 void BlackjackGUI::drawInsuranceScreen() {
 
-    drawGameScreen();
+    drawInsuranceGameScreen();
     drawButton(InsuranceYesButton, "INSURANCE YES");
     drawButton(InsuranceNoButton, "INSURANCE NO");
 
 
 }
+
+void BlackjackGUI::drawInsuranceGameScreen() {
+    // Título
+    sf::Text title(font);
+    title.setString(std::string("INSURANCE?") + "($" + std::to_string(game->getCurrentBet()/2) + ")");
+    title.setCharacterSize(40);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(sf::Vector2f(520, 15));
+    window.draw(title);
+
+    // Etiqueta Dealer
+    sf::Text dealerLabel(font);
+    dealerLabel.setString("DEALER");
+    dealerLabel.setCharacterSize(22);
+    dealerLabel.setFillColor(sf::Color::Yellow);
+    dealerLabel.setPosition(sf::Vector2f(100, 130));
+    window.draw(dealerLabel);
+
+    // Dibujar mano del dealer (primera carta oculta)
+    drawDealerHand(true);
+
+    //Maybe añadir linea separatoria ¿?
+    //probare como queda para ver si se añade o no se añade
+
+    // Etiqueta Player
+    sf::Text playerLabel(font);
+    playerLabel.setString("PLAYER");
+    playerLabel.setCharacterSize(22);
+    playerLabel.setFillColor(sf::Color::Yellow);
+    playerLabel.setPosition(sf::Vector2f(100, 410));
+    window.draw(playerLabel);
+
+    // Dibujar mano del jugador
+    drawPlayerHand();
+
+    // Mostrar dinero y apuesta
+    sf::Text moneyText(font);
+    moneyText.setString("Money: $" + std::to_string(game->getPlayerMoney()));
+    moneyText.setCharacterSize(24);
+    moneyText.setFillColor(sf::Color::Yellow);
+    moneyText.setPosition(sf::Vector2f(50, 20));
+    window.draw(moneyText);
+
+    sf::Text betText(font);
+    betText.setString("Bet: $" + std::to_string(game->getCurrentBet()));
+    betText.setCharacterSize(24);
+    betText.setFillColor(sf::Color::White);
+    betText.setPosition(sf::Vector2f(50, 60));
+    window.draw(betText);
+
+}
+
 
 void BlackjackGUI::drawPlayerHand() {
     const Player& player = game->getPlayer();
@@ -673,15 +725,8 @@ void BlackjackGUI::handleClick() {
                     if (game->canOfferInsurance()) {
                         currentState = GUIState::INSURANCE;
                     }
-                    else if (game->getState()==GameState::ROUND_END) {
-                        RoundResult roundResult = game->finishRound();
-                        // Mensaje según resultado
-                        lastOutcome = roundResult.outcome;
-                        resultMessage = buildResultMessage(roundResult,false);
-                        currentState = GUIState::RESULT;
-                    }
                     else{
-                        currentState = GUIState::PLAYING;
+                        continueAfterDeal();
                     }
                 }
             }
@@ -780,30 +825,12 @@ void BlackjackGUI::handleClick() {
         case GUIState::INSURANCE:
             if (mouseOver(InsuranceYesButton)) {
                 game->takeInsurance(true);
-                if (game->getState()==GameState::ROUND_END) {
-                    RoundResult roundResult = game->finishRound();
-                    // Mensaje según resultado
-                    lastOutcome = roundResult.outcome;
-                    resultMessage = buildResultMessage(roundResult,false);
-                    currentState = GUIState::RESULT;
-                }
-                else{
-                    currentState = GUIState::PLAYING;
-                }
+                continueAfterDeal();
             }
 
             else if (mouseOver(InsuranceNoButton)) {
                 game->takeInsurance(false);
-                if (game->getState()==GameState::ROUND_END) {
-                    RoundResult roundResult = game->finishRound();
-                    // Mensaje según resultado
-                    lastOutcome = roundResult.outcome;
-                    resultMessage = buildResultMessage(roundResult,false);
-                    currentState = GUIState::RESULT;
-                }
-                else{
-                    currentState = GUIState::PLAYING;
-                }
+                continueAfterDeal();
             }
 
 
@@ -811,7 +838,29 @@ void BlackjackGUI::handleClick() {
     }
 }
 
+void BlackjackGUI::continueAfterDeal() {
+
+    if (game->getState()==GameState::ROUND_END) {
+        RoundResult roundResult = game->finishRound();
+        // Mensaje según resultado
+        lastOutcome = roundResult.outcome;
+        resultMessage = buildResultMessage(roundResult,false);
+        currentState = GUIState::RESULT;
+    }
+    else{
+        currentState = GUIState::PLAYING;
+    }
+
+}
+
 std::string BlackjackGUI::buildResultMessage(const RoundResult &r, bool doubled) const {
+    RoundResult principal = r;
+
+    if (principal.insuranceChange!=0) {
+        principal.moneyChange = principal.moneyChange - principal.insuranceChange;
+        principal.insuranceChange = 0;
+        return buildResultMessage(principal,doubled) + " INSURANCE " + std::to_string(r.insuranceChange);
+    }
 
     switch (r.outcome) {
 
