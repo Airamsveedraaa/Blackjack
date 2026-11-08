@@ -19,7 +19,7 @@ resultMessage("")
     }
 
     //crear el game
-    game = new Game("Jugador",1000); //nombre y dinero por defecto
+    game = std::make_unique<Game> ("Jugador",1000); //nombre y dinero por defecto
 
     //inicializar botones
     initializeButtons();
@@ -27,10 +27,6 @@ resultMessage("")
     std::cout<<"Blackjack inicializado correctamente"  << std::endl;
 }
 
-
-BlackjackGUI::~BlackjackGUI() {
-    delete game;
-}
 
 
 void BlackjackGUI::initializeButtons() {
@@ -49,6 +45,16 @@ void BlackjackGUI::initializeButtons() {
     standButton.setSize(sf::Vector2f(120, 50));
     standButton.setPosition({560, 600});
     standButton.setFillColor(sf::Color(255, 100, 100));
+
+    //Botones de INSURANCE
+    InsuranceYesButton.setSize(sf::Vector2f(120, 50));
+    InsuranceYesButton.setPosition({400, 600});
+    InsuranceYesButton.setFillColor(sf::Color(100, 150, 255));
+
+    InsuranceNoButton.setSize(sf::Vector2f(120, 50));
+    InsuranceNoButton.setPosition({560, 600});
+    InsuranceNoButton.setFillColor(sf::Color(255, 100, 100));
+
 
     // Botón DOUBLE
     doubleButton.setSize(sf::Vector2f(120, 50));
@@ -175,6 +181,10 @@ void BlackjackGUI::render() {
         case GUIState::STATS:
             drawStatsScreen();
             break;
+        case GUIState::INSURANCE:
+            drawInsuranceScreen();
+            break;
+
     }
     window.display();
 }
@@ -478,6 +488,15 @@ void BlackjackGUI::drawStatsScreen() {
     drawButton(backButton, "BACK");
 }
 
+void BlackjackGUI::drawInsuranceScreen() {
+
+    drawGameScreen();
+    drawButton(InsuranceYesButton, "INSURANCE YES");
+    drawButton(InsuranceNoButton, "INSURANCE NO");
+
+
+}
+
 void BlackjackGUI::drawPlayerHand() {
     const Player& player = game->getPlayer();
     const auto& hand = player.getHand();
@@ -651,7 +670,10 @@ void BlackjackGUI::handleClick() {
                 if (game->placeBet(currentBet)) {
                     std::cout << "Iniciando ronda con apuesta: $" << currentBet << std::endl;
                     game->startRound();
-                    if (game->getState()==GameState::ROUND_END) {
+                    if (game->canOfferInsurance()) {
+                        currentState = GUIState::INSURANCE;
+                    }
+                    else if (game->getState()==GameState::ROUND_END) {
                         RoundResult roundResult = game->finishRound();
                         // Mensaje según resultado
                         lastOutcome = roundResult.outcome;
@@ -742,8 +764,7 @@ void BlackjackGUI::handleClick() {
 
         case GUIState::GAME_OVER:
             if (mouseOver(restartButton)) {
-                delete game;
-                game = new Game("Jugador", 1000);
+                game = std::make_unique<Game>("Jugador", 1000);
                 currentBet=0;
                 currentState=GUIState::BETTING;
             }
@@ -755,6 +776,37 @@ void BlackjackGUI::handleClick() {
                 //back from stats menu
                 currentState = GUIState::MENU;
             }
+            break;
+        case GUIState::INSURANCE:
+            if (mouseOver(InsuranceYesButton)) {
+                game->takeInsurance(true);
+                if (game->getState()==GameState::ROUND_END) {
+                    RoundResult roundResult = game->finishRound();
+                    // Mensaje según resultado
+                    lastOutcome = roundResult.outcome;
+                    resultMessage = buildResultMessage(roundResult,false);
+                    currentState = GUIState::RESULT;
+                }
+                else{
+                    currentState = GUIState::PLAYING;
+                }
+            }
+
+            else if (mouseOver(InsuranceNoButton)) {
+                game->takeInsurance(false);
+                if (game->getState()==GameState::ROUND_END) {
+                    RoundResult roundResult = game->finishRound();
+                    // Mensaje según resultado
+                    lastOutcome = roundResult.outcome;
+                    resultMessage = buildResultMessage(roundResult,false);
+                    currentState = GUIState::RESULT;
+                }
+                else{
+                    currentState = GUIState::PLAYING;
+                }
+            }
+
+
             break;
     }
 }

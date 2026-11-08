@@ -5,12 +5,13 @@
 #include "Game.h"
 #include <vector>
 #include <string>
+#include <memory>
 
 class BlackjackGUI {
 private:
     sf::RenderWindow window;
     sf::Font font;
-    Game* game;
+    std::unique_ptr<Game> game;
     
     enum class GUIState {
         MENU,
@@ -18,7 +19,8 @@ private:
         PLAYING,
         RESULT,
         GAME_OVER,
-        STATS
+        STATS,
+        INSURANCE
     };
     GUIState currentState;
     
@@ -32,6 +34,9 @@ private:
     sf::RectangleShape statsButton;
     sf::RectangleShape backButton;
     sf::RectangleShape menuButton;
+    sf::RectangleShape InsuranceYesButton;
+    sf::RectangleShape InsuranceNoButton;
+
     // Botones de apuesta
     sf::RectangleShape bet10Button;
     sf::RectangleShape bet50Button;
@@ -47,7 +52,6 @@ private:
 
 public:
     BlackjackGUI();
-    ~BlackjackGUI();
     void run();
     
 private:
@@ -61,6 +65,7 @@ private:
     void drawResultScreen();
     void drawGameOverScreen();
     void drawStatsScreen();
+    void drawInsuranceScreen();
     void drawStats(float x, float y);
     
     void drawCard(sf::Vector2f position, const Card& card, bool hidden = false);

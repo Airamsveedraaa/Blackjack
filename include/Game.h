@@ -67,10 +67,13 @@ private:
     int blackjacksHit;
     int maxMoney;
     int totalBet;
+    int insuranceBet = 0;
 
     // Métodos privados de lógica pura
     bool hasBlackjack(int handValue, size_t numCards) const;
     void updateStatistics(RoundResult::Outcome outcome);
+    //Dealer peek
+    void checkDealerBlackjack();
 
 public:
     Game(const char* playerName, int initialMoney = 1000);
@@ -108,6 +111,7 @@ public:
     PlayerActionResult playerHit();      // Jugador pide carta
     PlayerActionResult playerStand();    // Jugador se planta
     PlayerActionResult playerDoubleDown();  // Jugador dobla
+    void takeInsurance(bool yes);
 
     // Turno del dealer (automático)
     void playDealerTurn();               // Dealer juega automáticamente
@@ -118,7 +122,12 @@ public:
 
     // === MÉTODOS PARA CONSOLA (temporal) ===
     void showStatistics() const;         // Mantener por ahora
-    void playRound();                    // Mantener para consola
+    void playRound();
+
+    // Seguro ante AS del dealer
+    bool canOfferInsurance() const;
+
+
 };
 
 #endif //BLACKJACK_GAME_H

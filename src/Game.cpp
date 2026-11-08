@@ -34,13 +34,19 @@ void Game::startRound() {
     dealer.addCard(deck.dealCard());
 
     state=GameState::PLAYER_TURN; //pasamos a turno de player justo al repartir
-    if (hasBlackjack(player.getHandValue(),player.getHandSize()) || hasBlackjack(dealer.getHandValue(), dealer.getHandSize())) {
-        state=GameState::ROUND_END;
+
+    if (!canOfferInsurance()) {
+        checkDealerBlackjack();
     }
 
 
 }
 
+void Game::checkDealerBlackjack() {
+    if (hasBlackjack(player.getHandValue(),player.getHandSize()) || hasBlackjack(dealer.getHandValue(), dealer.getHandSize())) {
+        state=GameState::ROUND_END;
+    }
+}
 
 PlayerActionResult Game::playerHit() {
     if (state != GameState::PLAYER_TURN) {
@@ -92,6 +98,17 @@ PlayerActionResult Game::playerDoubleDown () {
     return PlayerActionResult::STAND; //se mantiene por defecto ya que no puede pedir mas cartas
 }
 
+void Game::takeInsurance(bool yes) {
+
+    if (yes) {
+        insuranceBet = currentBet/2;
+        totalBet += insuranceBet;
+    }
+
+    checkDealerBlackjack();
+
+}
+
 
 Game::Game(const char* PlayerName, int initialMoney)
 :player(PlayerName),
@@ -123,6 +140,7 @@ void Game::resetForNewRound() {
     dealer.clearHand();
     currentBet=0;
     state=GameState::BETTING; //reset de ronda -> volver a tiempo de apuestas
+    insuranceBet=0;
 }
 
 double Game::getWinRate() const {
@@ -382,6 +400,21 @@ RoundResult Game::finishRound() {
         currentStreak = 0;
     }
 
+    if (insuranceBet > 0) {
+
+        int insuranceResult;
+        if (dealerBJ) {
+            insuranceResult = 2*insuranceBet;
+        }
+        else {
+            insuranceResult = -insuranceBet;
+        }
+
+        playerMoney += insuranceResult;
+        result.moneyChange += insuranceResult;
+
+    }
+
     if (playerMoney > maxMoney) {
         maxMoney = playerMoney;
     }
@@ -421,7 +454,12 @@ void Game::showStatistics() const {
     std::cout << "╚════════════════════════════════════╝" << std::endl << std::endl;
 }
 
+bool Game::canOfferInsurance() const {
 
+    return (dealer.getHand()[1].getrank() == Rank::ACE &&
+        !hasBlackjack(player.getHandValue(),player.getHandSize())
+        && playerMoney >= currentBet + (currentBet/2));
+}
 
 
 
