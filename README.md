@@ -10,15 +10,19 @@ A Blackjack game written in C++20 with a graphical interface built on **SFML 3**
 
 ### Features
 
-- Graphical interface with five screens: menu, betting, game, round result and game over.
-- Betting with **+$10**, **+$50** and **+$100** chips, plus a **CLEAR** button. You start with **$1000**.
+- Graphical interface with seven screens: menu, statistics, betting, game, insurance, round result and game over.
+- Betting with **+$10**, **+$50** and **+$100** chips, an **ALL IN** button and a **CLEAR** button. You start with **$1000**.
 - Player actions: **HIT**, **STAND** and **DOUBLE**.
 - **Natural blackjack pays 3:2**.
+- **Insurance**: when the dealer shows an Ace, you can insure your hand for half your bet before the dealer checks for blackjack.
 - **Dealer peek**: if the dealer is dealt a blackjack, the round ends straight away and you only lose your original bet.
-- Result message and color based on the actual outcome of the round (green for a win, red for a loss, yellow for a push).
+- Result message and color based on the actual outcome of the round (green for a win, red for a loss, yellow for a push). With insurance, the message shows the bet and the insurance separately.
+- **Statistics screen** (from the menu): wins, losses, ties, win rate, best win streak, blackjacks, maximum money and total amount bet.
+- **MENU** button on the betting screen: go back to the menu (for example, to check your statistics) and carry on with the same game.
 - Automatic reshuffle when 10 or fewer cards are left in the deck.
-- **Game over** screen when you can no longer cover the minimum bet, showing your wins, losses and best win streak, with a **PLAY AGAIN** button to start a new game with $1000.
-- Console version (`Blackjack_Console`) with the same game rules and a statistics menu.
+- **Game over** screen when you can no longer cover the minimum bet, showing all your statistics, with a **PLAY AGAIN** button to start a new game with $1000.
+- Console version (`Blackjack_Console`) with the same game rules (except insurance) and a statistics menu.
+- Automated tests of the game logic (`Blackjack_Tests`).
 
 ### Rules in this version
 
@@ -29,9 +33,9 @@ A Blackjack game written in C++20 with a graphical interface built on **SFML 3**
 | Minimum bet | $10 |
 | Blackjack payout | 3:2 |
 | Dealer | Hits below 17 and stands on any 17 |
-| Double down | Only with your first two cards, and only if you can cover the bet |
+| Double down | Only with your first two cards, and only if your money covers the doubled bet (plus insurance, if you took it) |
 | Dealer blackjack | Checked right after the deal (peek) |
-| Insurance | Offered when the dealer shows an Ace; costs half the bet and pays 2:1 |
+| Insurance | Offered when the dealer shows an Ace and you don't have blackjack; costs half the bet and pays 2:1 |
 | Not available yet | Split |
 
 ### Controls
@@ -123,14 +127,14 @@ The game logic (`Game`) does no input or output on its own; the console version 
 
 | Version | Contents |
 |---|---|
-| *In development* | Phase 1: portable font (DejaVu Sans in `assets/`) and Windows-only code isolated behind `#ifdef _WIN32` |
-| **V2.0** | Complete graphical version: game over, dealer peek, 3:2 payout, result colors and a fixed result screen layout |
+| **V2.1** | Phase 1: insurance, statistics screen, MENU button during the game, ALL IN bet, portable font (DejaVu Sans in `assets/`), automated tests, and a fix for doubling down without enough money |
+| V2.0 | Complete graphical version: game over, dealer peek, 3:2 payout, result colors and a fixed result screen layout |
 | V1.1 | First graphical game screen (work in progress) |
 | V1.0 | Console version |
 
 ### Roadmap
 
-Phase 1 (gameplay improvements) is almost done: portable font, statistics screen, ALL IN bet, insurance and automated tests. Next: phase 2 (card sprites, dealing animation and sounds), phase 3 (saving progress and an options screen) and phase 4 (Linux build, cleanup and release V3.0). Split will come after that.
+Phase 1 (gameplay improvements) is done and released as V2.1. Next: phase 2 (card sprites, dealing animation and sounds), phase 3 (saving progress and an options screen) and phase 4 (Linux build, cleanup and release V3.0). Split will come after that.
 
 ---
 
@@ -140,15 +144,19 @@ Un juego de Blackjack escrito en C++20 con interfaz gráfica hecha con **SFML 3*
 
 ### Características
 
-- Interfaz gráfica con cinco pantallas: menú, apuesta, partida, resultado de la ronda y fin de partida.
-- Apuestas con fichas de **+$10**, **+$50** y **+$100**, y un botón **CLEAR** para borrarla. Empiezas con **1000 $**.
+- Interfaz gráfica con siete pantallas: menú, estadísticas, apuesta, partida, seguro, resultado de la ronda y fin de partida.
+- Apuestas con fichas de **+$10**, **+$50** y **+$100**, un botón **ALL IN** y un botón **CLEAR** para borrarla. Empiezas con **1000 $**.
 - Acciones del jugador: **HIT** (pedir carta), **STAND** (plantarse) y **DOUBLE** (doblar).
 - **El blackjack natural paga 3:2**.
+- **Seguro**: cuando el dealer enseña un As, puedes asegurar tu mano por media apuesta antes de que el dealer mire si tiene blackjack.
 - **Dealer peek**: si al dealer le sale blackjack en el reparto, la ronda termina en ese momento y solo pierdes tu apuesta inicial.
-- Mensaje y color del resultado según lo que ha pasado de verdad en la ronda (verde si ganas, rojo si pierdes, amarillo si hay empate).
+- Mensaje y color del resultado según lo que ha pasado de verdad en la ronda (verde si ganas, rojo si pierdes, amarillo si hay empate). Con seguro, el mensaje muestra la apuesta y el seguro por separado.
+- **Pantalla de estadísticas** (desde el menú): victorias, derrotas, empates, porcentaje de victorias, mejor racha, blackjacks, dinero máximo y total apostado.
+- Botón **MENU** en la pantalla de apuesta: vuelves al menú (por ejemplo, para mirar tus estadísticas) y sigues con la misma partida.
 - El mazo se vuelve a barajar solo cuando quedan 10 cartas o menos.
-- Pantalla de **Game Over** cuando ya no te llega para la apuesta mínima, con tus victorias, derrotas y mejor racha, y un botón **PLAY AGAIN** para empezar otra partida con 1000 $.
-- Versión de consola (`Blackjack_Console`) con las mismas reglas y un menú de estadísticas.
+- Pantalla de **Game Over** cuando ya no te llega para la apuesta mínima, con todas tus estadísticas y un botón **PLAY AGAIN** para empezar otra partida con 1000 $.
+- Versión de consola (`Blackjack_Console`) con las mismas reglas (salvo el seguro) y un menú de estadísticas.
+- Tests automáticos de la lógica del juego (`Blackjack_Tests`).
 
 ### Reglas de esta versión
 
@@ -159,9 +167,9 @@ Un juego de Blackjack escrito en C++20 con interfaz gráfica hecha con **SFML 3*
 | Apuesta mínima | 10 $ |
 | Pago del blackjack | 3:2 |
 | Dealer | Pide carta por debajo de 17 y se planta con cualquier 17 |
-| Doblar | Solo con las dos primeras cartas y si te llega el dinero |
+| Doblar | Solo con las dos primeras cartas y si tu dinero cubre la apuesta doble (más el seguro, si lo has cogido) |
 | Blackjack del dealer | Se comprueba justo después del reparto (peek) |
-| Seguro | Se ofrece cuando el dealer enseña un As; cuesta media apuesta y paga 2:1 |
+| Seguro | Se ofrece cuando el dealer enseña un As y tú no tienes blackjack; cuesta media apuesta y paga 2:1 |
 | Todavía no disponible | Split |
 
 ### Controles
@@ -253,11 +261,11 @@ La lógica del juego (`Game`) no lee ni escribe nada por su cuenta: la versión 
 
 | Versión | Contenido |
 |---|---|
-| *En desarrollo* | Fase 1: fuente portátil (DejaVu Sans en `assets/`) y el código exclusivo de Windows aislado con `#ifdef _WIN32` |
-| **V2.0** | Versión gráfica completa: Game Over, dealer peek, pago 3:2, colores del resultado y pantalla de resultado corregida |
+| **V2.1** | Fase 1: seguro, pantalla de estadísticas, botón MENU durante la partida, apuesta ALL IN, fuente portátil (DejaVu Sans en `assets/`), tests automáticos y arreglo de doblar sin dinero suficiente |
+| V2.0 | Versión gráfica completa: Game Over, dealer peek, pago 3:2, colores del resultado y pantalla de resultado corregida |
 | V1.1 | Primera pantalla de juego gráfica (en desarrollo) |
 | V1.0 | Versión de consola |
 
 ### Próximos pasos
 
-La fase 1 (mejoras de juego) está casi terminada: fuente portátil, pantalla de estadísticas, apuesta ALL IN, seguro y tests automáticos. Después: fase 2 (sprites de cartas, animación de reparto y sonidos), fase 3 (guardar la partida y pantalla de opciones) y fase 4 (compilar en Linux, limpieza y release V3.0). El split vendrá después.
+La fase 1 (mejoras de juego) está terminada y publicada como V2.1. Lo siguiente: fase 2 (sprites de cartas, animación de reparto y sonidos), fase 3 (guardar la partida y pantalla de opciones) y fase 4 (compilar en Linux, limpieza y release V3.0). El split vendrá después.
