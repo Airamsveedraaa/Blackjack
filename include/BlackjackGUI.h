@@ -31,10 +31,12 @@ private:
     sf::RectangleShape restartButton;
     sf::RectangleShape statsButton;
     sf::RectangleShape backButton;
+    sf::RectangleShape menuButton;
     // Botones de apuesta
     sf::RectangleShape bet10Button;
     sf::RectangleShape bet50Button;
     sf::RectangleShape bet100Button;
+    sf::RectangleShape AllInButton;
     sf::RectangleShape clearBetButton;
     sf::RectangleShape dealButton;
     

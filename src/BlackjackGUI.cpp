@@ -73,8 +73,13 @@ void BlackjackGUI::initializeButtons() {
     bet100Button.setPosition(sf::Vector2f(570, 380));
     bet100Button.setFillColor(sf::Color(100, 100, 255));
 
+    AllInButton.setSize(sf::Vector2f(80,50));
+    AllInButton.setPosition(sf::Vector2f(680, 380));
+    AllInButton.setFillColor(sf::Color(100, 100, 255));
+
+
     clearBetButton.setSize(sf::Vector2f(80, 50));
-    clearBetButton.setPosition(sf::Vector2f(680, 380));
+    clearBetButton.setPosition(sf::Vector2f(790, 380));
     clearBetButton.setFillColor(sf::Color(255, 100, 100));
 
     dealButton.setSize(sf::Vector2f(150, 60));
@@ -95,6 +100,11 @@ void BlackjackGUI::initializeButtons() {
     backButton.setSize(sf::Vector2f(200,60));
     backButton.setPosition(sf::Vector2f(540, 480));
     backButton.setFillColor(sf::Color(100, 100, 100));
+
+    //Boton menu
+    menuButton.setSize(sf::Vector2f(200,60));
+    menuButton.setPosition(sf::Vector2f(540, 580));
+    menuButton.setFillColor(sf::Color(100, 100, 100));
 
 }
 
@@ -258,7 +268,9 @@ void BlackjackGUI::drawBettingScreen() {
     drawButton(bet10Button, "+$10");
     drawButton(bet50Button, "+$50");
     drawButton(bet100Button, "+$100");
+    drawButton(AllInButton, "ALL IN");
     drawButton(clearBetButton, "CLEAR");
+    drawButton(menuButton, "MENU");
 
     // Botón DEAL (solo activo si hay apuesta)
     if (currentBet > 0) {
@@ -458,7 +470,7 @@ void BlackjackGUI::drawStatsScreen() {
     title.setString("STATISTICS");
     title.setCharacterSize(24);
     title.setFillColor(sf::Color::White);
-    title.setPosition(sf::Vector2f(280, 20));
+    title.setPosition(sf::Vector2f(580, 20));
     window.draw(title);
 
     drawStats(280,50);
@@ -603,6 +615,10 @@ void BlackjackGUI::handleClick() {
                 }
             }
 
+            if (mouseOver(menuButton)) {
+                currentState = GUIState::MENU;
+            }
+
             // Botón +$50
             if (mouseOver(bet50Button)) {
                 if (currentBet + 50 <= game->getPlayerMoney()) {
@@ -617,6 +633,11 @@ void BlackjackGUI::handleClick() {
                     currentBet += 100;
                     std::cout << "Apuesta: $" << currentBet << std::endl;
                 }
+            }
+
+            if (mouseOver(AllInButton)) {
+                currentBet = game->getPlayerMoney();
+                std::cout << "Apuesta: $" << currentBet << std::endl;
             }
 
             // Botón CLEAR
@@ -853,7 +874,7 @@ void BlackjackGUI::drawStats(float x, float y)
 
     lineY+=40;
 
-    title.setString("Blackjacks hitted: " + std::to_string(game->getBlackjacksHit()));
+    title.setString("Blackjacks hit: " + std::to_string(game->getBlackjacksHit()));
     title.setPosition(sf::Vector2f(x, lineY));
     window.draw(title);
 
@@ -865,7 +886,7 @@ void BlackjackGUI::drawStats(float x, float y)
 
     lineY+=40;
 
-    title.setString("Total money Bet: " + std::to_string(game->getTotalBet()));
+    title.setString("Total Bet: " + std::to_string(game->getTotalBet()));
     title.setPosition(sf::Vector2f(x, lineY));
     window.draw(title);
 
