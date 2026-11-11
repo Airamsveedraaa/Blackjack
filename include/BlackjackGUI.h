@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <array>
 
 class BlackjackGUI {
 private:
@@ -49,6 +50,13 @@ private:
     std::string resultMessage;
     RoundResult::Outcome lastOutcome;
     void handleClick();
+
+    std::array<std::array<sf::Texture,13>,4> cardTextures;
+    sf::Texture cardBackTexture;
+    static constexpr int CARD_RECT_X = 11;
+    static constexpr const int CARD_RECT_Y = 2;
+    static constexpr const int CARD_RECT_W = 42;
+    static constexpr const int CARD_RECT_H = 60;
 
 public:
     BlackjackGUI();

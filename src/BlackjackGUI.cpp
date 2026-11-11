@@ -18,6 +18,28 @@ resultMessage("")
         throw std::runtime_error("No se pudo cargar la fuente");
     }
 
+    //Back Texture
+    if (!cardBackTexture.loadFromFile("assets/cards/card_back.png")) {
+        std::cerr << "Error: No se pudo cargar el reverso de la carta" << std::endl;
+        throw std::runtime_error("No se pudo cargar el reverso de la carta");
+    }
+
+    const std::array<std::string,13> ranks = {"02","03","04","05","06","07","08","09","10","J","Q","K","A"};
+    const std::array<std::string,4> suits = {"hearts","spades","clubs","diamonds"};
+    for (int i = 0; i < suits.size(); i++) {
+        for (int j = 0; j < ranks.size(); j++) {
+            if (!cardTextures[i][j].loadFromFile("assets/cards/card_" + suits[i] + "_" + ranks[j] +  ".png")) {
+                std::cerr << "Error: No se pudo cargar la carta" << std::endl;
+                throw std::runtime_error("No se pudo cargar la carta");
+            }
+            cardTextures[i][j].setSmooth(false);
+        }
+
+    }
+
+
+
+
     //crear el game
     game = std::make_unique<Game> ("Jugador",1000); //nombre y dinero por defecto
 
@@ -595,72 +617,22 @@ void BlackjackGUI::drawDealerHand(bool hideFirst) {
 }
 
 void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden) {
-    // Rectángulo de la carta
-    sf::RectangleShape cartaRect(sf::Vector2f(80, 110));
-    cartaRect.setPosition(position);
-    cartaRect.setFillColor(sf::Color::White);
-    cartaRect.setOutlineColor(sf::Color::Black);
-    cartaRect.setOutlineThickness(2);
-    window.draw(cartaRect);
-
     if (hidden) {
         // Carta oculta - mostrar patrón
-        sf::RectangleShape backPattern(sf::Vector2f(80,110));
-        backPattern.setPosition((position));
-        backPattern.setFillColor((sf::Color(50,50,150)));
-        window.draw(backPattern);
-
-        sf::Text pattern(font);
-        pattern.setString(("?"));
-        pattern.setCharacterSize(50);
-        pattern.setFillColor(sf::Color::White);
-        pattern.setPosition(sf::Vector2f(position.x+25,position.y+25));
-        window.draw(pattern);
+        sf::Sprite sello(cardBackTexture);
+        sello.setTextureRect(sf::IntRect({CARD_RECT_X,CARD_RECT_Y},{CARD_RECT_W, CARD_RECT_H}));
+        sello.setScale({80.f / CARD_RECT_W, 110.f / CARD_RECT_H});
+        sello.setPosition(position);
+        window.draw(sello);
     } else {
-        // Mostrar rango (arriba izquierda)
-        sf::Text rango(font);
-        rango.setString(card.getCardString());
-        rango.setCharacterSize(24);
-        if (card.getsuit()== Suit::Hearts || card.getsuit()==Suit::Diamonds) {
-            //si es corazones o espadas -> color rojo
-            rango.setFillColor(sf::Color::Red);
-        }
-        else {
-            //para trebol y picas -> color negro
-            rango.setFillColor(sf::Color::Black);
-        }
-        rango.setPosition(sf::Vector2f(position.x + 8, position.y + 5));
-        window.draw(rango);
 
-        // Mostrar palo (centro)
-        sf::Text palo(font);
-        std::string paloStr = card.getSuitString();
-        palo.setString(sf::String::fromUtf8(paloStr.begin(), paloStr.end()));
-        palo.setCharacterSize(35);
-
-        // Color rojo para corazones y diamantes
-        if (card.getsuit() == Suit::Hearts || card.getsuit() == Suit::Diamonds) {
-            palo.setFillColor(sf::Color::Red);
-        } else {
-            palo.setFillColor(sf::Color::Black);
-        }
-
-        palo.setPosition(sf::Vector2f(position.x + 22, position.y + 45));
-        window.draw(palo);
-
-        //texto esquina inferior derecha (invertido)
-        sf::Text rangoBottom(font);
-        rangoBottom.setString((card.getCardString()));
-        rangoBottom.setCharacterSize(24);
-
-        if (card.getsuit() == Suit::Hearts || card.getsuit() == Suit::Diamonds) {
-            rangoBottom.setFillColor(sf::Color::Red);
-        } else {
-            rangoBottom.setFillColor(sf::Color::Black);
-        }
-
-        rangoBottom.setPosition(sf::Vector2f(position.x + 45, position.y + 75));
-        window.draw(rangoBottom);
+        int palo = static_cast<int>(card.getsuit());
+        int rango = static_cast<int>(card.getrank())-2;
+        sf::Sprite sello(cardTextures[palo][rango]);
+        sello.setTextureRect(sf::IntRect({CARD_RECT_X,CARD_RECT_Y},{CARD_RECT_W, CARD_RECT_H}));
+        sello.setScale({80.f / CARD_RECT_W, 110.f / CARD_RECT_H});
+        sello.setPosition(position);
+        window.draw(sello);
     }
 }
 
