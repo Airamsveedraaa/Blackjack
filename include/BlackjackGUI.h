@@ -45,6 +45,15 @@ private:
     sf::RectangleShape AllInButton;
     sf::RectangleShape clearBetButton;
     sf::RectangleShape dealButton;
+
+    // Reloj para animación carta
+     sf::Clock clock;
+     bool dealingToPlayer = true;
+     size_t shownPlayerCards = 0;
+     size_t shownDealerCards = 0;
+     float dealProgress = 0.f;
+     static constexpr float DEAL_DURATION = 0.3f;
+    const sf::Vector2f DECK_POS{1100.f,40.f};
     
     int currentBet;
     std::string resultMessage;
@@ -86,6 +95,7 @@ private:
     std::string buildResultMessage(const RoundResult& r, bool doubled) const;
     
     bool mouseOver(const sf::RectangleShape& rect) const;
+    bool isDealing() const;
     void initializeButtons();
 };
 

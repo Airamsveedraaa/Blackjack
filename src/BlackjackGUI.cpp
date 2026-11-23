@@ -176,9 +176,41 @@ void BlackjackGUI::handleEvents() {
 }
 
 void BlackjackGUI::update() {
-    //TO DO ---> IMPLEMENTARLO
+    float dt = clock.restart().asSeconds(); //tiempo desde frame anterior
+
+    size_t playerCards = game->getPlayer().getHandSize();
+    size_t dealerCards = game->getDealer().getHandSize();
+
+    if (playerCards < shownPlayerCards || dealerCards < shownDealerCards) {
+        shownDealerCards = 0;
+        shownPlayerCards = 0;
+        dealProgress = 0.f;
+    }
+
+    bool playerPending = playerCards > shownPlayerCards;
+    bool dealerPending = dealerCards > shownDealerCards;
+
+    if (playerPending || dealerPending) {
+        dealingToPlayer = playerPending && (shownPlayerCards <= shownDealerCards || !dealerPending);
+    dealProgress += dt / DEAL_DURATION;
+
+        if (dealProgress >= 1.f) {
+            if (dealingToPlayer) {
+                shownPlayerCards++;
+            }
+            else
+                shownDealerCards++;
+            dealProgress = 0.f;
+        }
+
+    }
+
 }
 
+bool BlackjackGUI::isDealing() const {
+    return game->getPlayer().getHandSize() > shownPlayerCards
+        || game->getDealer().getHandSize() > shownDealerCards;
+}
 
 void BlackjackGUI::render() {
     window.clear(sf::Color(0,100,0)); //Verde casino
@@ -580,7 +612,19 @@ void BlackjackGUI::drawPlayerHand() {
     float spacing = 90.0f;
 
     for (size_t i = 0; i < hand.size(); i++) {
-        drawCard(sf::Vector2f(startX + i * spacing, y), hand[i], false);
+        sf::Vector2f destino(startX + i * spacing, y);
+
+        if (i < shownPlayerCards) {
+            drawCard(destino, hand[i], false);                                   // ya llegó: en su sitio
+        }
+        else if (i == shownPlayerCards && dealingToPlayer) {
+            sf::Vector2f pos = DECK_POS + (destino - DECK_POS) * dealProgress;   // la fórmula: inicio + (fin - inicio) × t
+            drawCard(pos, hand[i], false);                                        // volando
+            break;                                                                // las siguientes aún no salen
+        }
+        else {
+            break;                                                                // todavía no le toca
+        }
     }
 
     // Mostrar valor de la mano
@@ -601,8 +645,19 @@ void BlackjackGUI::drawDealerHand(bool hideFirst) {
     float spacing = 90.0f;
 
     for (size_t i = 0; i < hand.size(); i++) {
-        bool shouldHide = (hideFirst && i == 0);
-        drawCard(sf::Vector2f(startX + i * spacing, y), hand[i], shouldHide);
+        sf::Vector2f destino(startX + i * spacing, y);
+        bool shouldHide = (hideFirst && i==0);
+        if (i < shownDealerCards) {
+            drawCard(destino, hand[i], shouldHide);                                   // ya llegó: en su sitio
+        }
+        else if (i == shownDealerCards && !dealingToPlayer) {
+            sf::Vector2f pos = DECK_POS + (destino - DECK_POS) * dealProgress;   // la fórmula: inicio + (fin - inicio) × t
+            drawCard(pos, hand[i], shouldHide);                                        // volando
+            break;                                                                // las siguientes aún no salen
+        }
+        else {
+            break;                                                                // todavía no le toca
+        }
     }
 
     // Mostrar valor solo si no hay cartas ocultas
@@ -638,6 +693,7 @@ void BlackjackGUI::drawCard(sf::Vector2f position, const Card& card, bool hidden
 
 
 void BlackjackGUI::handleClick() {
+    if (isDealing()) return;
     switch (currentState) {
         case GUIState::MENU:
             if (mouseOver(playButton)) {
