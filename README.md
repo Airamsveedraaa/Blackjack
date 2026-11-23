@@ -102,8 +102,9 @@ Blackjack/
 ├── CMakeLists.txt     # Targets: Blackjack_GUI, Blackjack_Console and Blackjack_Tests
 ├── main.cpp           # Console version
 ├── main_gui.cpp       # Graphical version
-├── assets/
-│   └── fonts/         # DejaVu Sans and its license (copied next to the executable when building)
+├── assets/            # Copied next to the executable when building
+│   ├── cards/         # Card images (Kenney, CC0) and their license
+│   └── fonts/         # DejaVu Sans and its license
 ├── tests/
 │   └── test_game.cpp  # Automated tests of the game logic
 ├── include/           # Headers
@@ -121,6 +122,7 @@ The game logic (`Game`) does no input or output on its own; the console version 
 
 ### Credits
 
+- Cards: *Playing Cards Pack* by [Kenney](https://www.kenney.nl), released under [CC0](http://creativecommons.org/publicdomain/zero/1.0/). See [`assets/cards/License.txt`](assets/cards/License.txt).
 - Font: [DejaVu Sans](https://github.com/dejavu-fonts/dejavu-fonts), distributed under its own license (Bitstream Vera and Arev). The full text is in [`assets/fonts/LICENSE`](assets/fonts/LICENSE).
 
 ### Versions
@@ -236,8 +238,9 @@ Blackjack/
 ├── CMakeLists.txt     # Targets: Blackjack_GUI, Blackjack_Console y Blackjack_Tests
 ├── main.cpp           # Versión de consola
 ├── main_gui.cpp       # Versión gráfica
-├── assets/
-│   └── fonts/         # DejaVu Sans y su licencia (se copian junto al ejecutable al compilar)
+├── assets/            # Se copia junto al ejecutable al compilar
+│   ├── cards/         # Imágenes de las cartas (Kenney, CC0) y su licencia
+│   └── fonts/         # DejaVu Sans y su licencia
 ├── tests/
 │   └── test_game.cpp  # Tests automáticos de la lógica del juego
 ├── include/           # Cabeceras
@@ -255,6 +258,7 @@ La lógica del juego (`Game`) no lee ni escribe nada por su cuenta: la versión 
 
 ### Créditos
 
+- Cartas: *Playing Cards Pack* de [Kenney](https://www.kenney.nl), publicado con licencia [CC0](http://creativecommons.org/publicdomain/zero/1.0/). Mira [`assets/cards/License.txt`](assets/cards/License.txt).
 - Fuente: [DejaVu Sans](https://github.com/dejavu-fonts/dejavu-fonts), distribuida con su propia licencia (Bitstream Vera y Arev). El texto completo está en [`assets/fonts/LICENSE`](assets/fonts/LICENSE).
 
 ### Versiones
